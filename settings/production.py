@@ -4,7 +4,7 @@ from .base import *
 # Production settings
 DEBUG = False
 
-ALLOWED_HOSTS = ['.reaction-open-access-database.herokuapp.com']
+ALLOWED_HOSTS = ['reaction-open-access-database.herokuapp.com']
 
 # SSL
 CSRF_COOKIE_SECURE = True

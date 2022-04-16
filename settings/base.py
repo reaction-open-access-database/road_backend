@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'road_app.apps.RoadAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -45,7 +44,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'road.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATES = [
     {
@@ -64,7 +63,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'road.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database
