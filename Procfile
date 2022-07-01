@@ -1,1 +1,1 @@
-web: gunicorn road.wsgi
+web: gunicorn wsgi
