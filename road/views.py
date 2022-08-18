@@ -1,7 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from rest_framework import viewsets, permissions
+from .models import Molecule
+from .serializers import MoleculeSerializer
 
 
-# Create your views here.
-def index(request):
-    return HttpResponse("Hello, world. You're at the road index.")
+class MoleculeViewSet(viewsets.ModelViewSet):
+    queryset = Molecule.objects.all()
+    serializer_class = MoleculeSerializer
+    permission_classes = [permissions.IsAuthenticated]
