@@ -1,4 +1,4 @@
-from .models import Molecule
+from .models import Molecule, UserProfile
 from rest_framework import serializers
 from rdkit import Chem
 import json
@@ -19,4 +19,13 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Molecule
-        fields = ['name', 'molecule']
+        fields = ['url', 'name', 'molecule']
+
+
+class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+    email = serializers.ReadOnlyField(source='user.email')
+
+    class Meta:
+        model = UserProfile
+        fields = ['url', 'username', 'email']
