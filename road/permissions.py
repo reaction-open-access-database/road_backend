@@ -12,3 +12,11 @@ class IsSuperUser(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return self.has_permission(request, view)
+
+
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return bool(request.method in SAFE_METHODS)
+
+    def has_object_permission(self, request, view, obj):
+        return self.has_permission(request, view)
