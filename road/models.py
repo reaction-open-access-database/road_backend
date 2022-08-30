@@ -43,6 +43,9 @@ class UserProfile(models.Model):
     owner = models.ForeignKey(User, related_name='details',
                               on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.username
+
 
 # Automatically create UserProfile when a User is created
 @receiver(post_save, sender=User)
