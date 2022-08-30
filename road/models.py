@@ -8,6 +8,7 @@ from django.dispatch import receiver
 class Molecule(models.Model):
     name = models.CharField(max_length=256)
     molecule = models.MolField()
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_inchi(self):
         return Chem.MolToInchi(self.molecule)

@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from .models import Molecule, UserProfile
 from .serializers import MoleculeSerializer, UserProfileSerializer
-from .permissions import IsAuthenticated, IsOwner, IsSuperUser
+from .permissions import IsOwner, IsSuperUser, ReadOnly
 from rest_framework.exceptions import NotFound
 
 
@@ -13,7 +13,7 @@ class HideUnauthorised:
 class MoleculeViewSet(viewsets.ModelViewSet):
     queryset = Molecule.objects.all()
     serializer_class = MoleculeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser | IsOwner | ReadOnly]
 
 
 class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):
