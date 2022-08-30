@@ -17,7 +17,7 @@ class Molecule(models.Model):
 
 
 class Reaction(models.Model):
-    pass
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class ReactionComponent(models.Model):
@@ -32,7 +32,8 @@ class ReactionComponent(models.Model):
     )
     reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE)
     molecule = models.ForeignKey(Molecule, on_delete=models.CASCADE)
-    count = models.IntegerField(default=1)  # TODO: Allow fractions
+    count_numerator = models.IntegerField(default=1)
+    count_denominator = models.IntegerField(default=1)
 
     def get_component_type(self):
         return self.ComponentType[self.component_type]
