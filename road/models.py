@@ -8,7 +8,8 @@ from django.dispatch import receiver
 class Molecule(models.Model):
     name = models.CharField(max_length=256)
     molecule = models.MolField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE,
+                              related_name='molecules')
 
     def get_inchi(self):
         return Chem.MolToInchi(self.molecule)
@@ -18,7 +19,8 @@ class Molecule(models.Model):
 
 
 class Reaction(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE,
+                              related_name='reactions')
 
 
 class ReactionComponent(models.Model):
@@ -31,10 +33,14 @@ class ReactionComponent(models.Model):
         choices=ComponentType.choices,
         max_length=10,
     )
-    reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE)
-    molecule = models.ForeignKey(Molecule, on_delete=models.CASCADE)
+    reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE,
+                                 related_name='components')
+    molecule = models.ForeignKey(Molecule, on_delete=models.CASCADE,
+                                 related_name='components')
     count_numerator = models.IntegerField(default=1)
     count_denominator = models.IntegerField(default=1)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE,
+                              related_name='components')
 
     def get_component_type(self):
         return self.ComponentType[self.component_type]
@@ -45,8 +51,10 @@ class ReactionSource(models.Model):
     Contains information about where the reaction came from.
     This could be a journal article, book, website or other source.
     """
-    reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE,
+                                 related_name='reaction_sources')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE,
+                              related_name='reaction_sources')
 
 
 class UserProfile(models.Model):

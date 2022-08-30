@@ -1,4 +1,4 @@
-from .models import Molecule, UserProfile
+from .models import Molecule, Reaction, ReactionComponent, UserProfile
 from .exceptions import InvalidMolecule
 from rest_framework import serializers
 from rdkit import Chem
@@ -32,6 +32,24 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Molecule
         fields = ['url', 'name', 'molecule']
+
+
+class ReactionSerializer(serializers.HyperlinkedModelSerializer):
+    components = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='reactioncomponent-detail'
+    )
+
+    class Meta:
+        model = Reaction
+        fields = ['url', 'components']
+
+
+class ReactionComponentSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ReactionComponent
+        fields = ['url', 'reaction', 'molecule', 'component_type']
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
