@@ -38,6 +38,15 @@ class ReactionComponent(models.Model):
         return self.ComponentType[self.component_type]
 
 
+class ReactionSource(models.Model):
+    """
+    Contains information about where the reaction came from.
+    This could be a journal article, book, website or other source.
+    """
+    reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, related_name='details',
