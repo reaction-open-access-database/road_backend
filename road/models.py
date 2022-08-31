@@ -8,7 +8,7 @@ from django.dispatch import receiver
 class Molecule(models.Model):
     name = models.CharField(max_length=256)
     molecule = models.MolField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE,
+    owner = models.ForeignKey(User, on_delete=models.RESTRICT,
                               related_name='molecules')
 
     def get_inchi(self):
@@ -19,7 +19,7 @@ class Molecule(models.Model):
 
 
 class Reaction(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE,
+    owner = models.ForeignKey(User, on_delete=models.RESTRICT,
                               related_name='reactions')
 
 
@@ -35,11 +35,11 @@ class ReactionComponent(models.Model):
     )
     reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE,
                                  related_name='components')
-    molecule = models.ForeignKey(Molecule, on_delete=models.CASCADE,
+    molecule = models.ForeignKey(Molecule, on_delete=models.RESTRICT,
                                  related_name='components')
     count_numerator = models.IntegerField(default=1)
     count_denominator = models.IntegerField(default=1)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE,
+    owner = models.ForeignKey(User, on_delete=models.RESTRICT,
                               related_name='components')
 
     def get_component_type(self):
@@ -53,7 +53,7 @@ class ReactionSource(models.Model):
     """
     reaction = models.ForeignKey(Reaction, on_delete=models.CASCADE,
                                  related_name='reaction_sources')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE,
+    owner = models.ForeignKey(User, on_delete=models.RESTRICT,
                               related_name='reaction_sources')
 
 
