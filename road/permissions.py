@@ -1,14 +1,25 @@
 from rest_framework.permissions import *
 
 
+# Ensure that every class contains has_permission AND
+# has_object_permission methods
+
+
 class IsOwner(BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+
     def has_object_permission(self, request, view, obj):
-        return bool(request.user and request.user == obj.owner)
+        return request.user and \
+               request.user.is_authenticated and \
+               request.user == obj.owner
 
 
 class IsSuperUser(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.user and request.user.is_superuser)
+        return request.user and \
+               request.user.is_authenticated and \
+               request.user.is_superuser
 
     def has_object_permission(self, request, view, obj):
         return self.has_permission(request, view)
@@ -16,7 +27,7 @@ class IsSuperUser(BasePermission):
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
-        return bool(request.method in SAFE_METHODS)
+        return request.method in SAFE_METHODS
 
     def has_object_permission(self, request, view, obj):
         return self.has_permission(request, view)
