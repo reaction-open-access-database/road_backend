@@ -58,13 +58,11 @@ class ReactionSource(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,
-                                related_name='profile')
-    owner = models.ForeignKey(User, related_name='details',
-                              on_delete=models.CASCADE)
+    owner = models.OneToOneField(User, on_delete=models.CASCADE,
+                                 related_name='profile')
 
     def __str__(self):
-        return self.user.username
+        return self.owner.username
 
 
 # Automatically create UserProfile when a User is created
