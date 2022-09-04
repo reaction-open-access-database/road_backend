@@ -151,7 +151,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'road.serializers.UserProfileSerializer',
+    'USER_DETAILS_SERIALIZER': 'road.serializers.UserSerializer',
 }
 
 SITE_ID = 1

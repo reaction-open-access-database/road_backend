@@ -58,7 +58,8 @@ class ReactionSource(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,
+                                related_name='profile')
     owner = models.ForeignKey(User, related_name='details',
                               on_delete=models.CASCADE)
 
