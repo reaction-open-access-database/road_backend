@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from .views import MoleculeViewSet, ReactionViewSet, ReactionComponentViewSet, \
-    UserViewSet
+    UserViewSet, MoleculeQueryView
 from dj_rest_auth.registration.views import VerifyEmailView, RegisterView, \
     ConfirmEmailView, ResendEmailVerificationView
 from dj_rest_auth.views import LoginView, LogoutView
@@ -16,6 +16,8 @@ router.register('user-profiles', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('molecule-query/', MoleculeQueryView.as_view()),
+    # Accounts
     path('register/', RegisterView.as_view()),
     path('login/', LoginView.as_view()),
     path('logout/', LogoutView.as_view()),
