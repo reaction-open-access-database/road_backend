@@ -7,7 +7,7 @@ from .exceptions import ParameterNotProvided, InvalidQuery
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
 from django.db.models import Q
-from query_parser import parse_and_build_query, QueryParserError
+from query_parser import build_molecule_query, QueryParserError
 
 
 class HideUnauthorised:
@@ -19,6 +19,9 @@ class MoleculeViewSet(viewsets.ModelViewSet):
     queryset = Molecule.objects.all()
     serializer_class = MoleculeSerializer
     permission_classes = [IsSuperUser | IsOwner | ReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class ReactionViewSet(viewsets.ModelViewSet):
@@ -64,7 +67,7 @@ class MoleculeQueryView(QueryView):
         query = self._get_query()
 
         try:
-            parsed_query = parse_and_build_query(query, Q)
+            parsed_query = build_molecule_query(query, Q)
         except QueryParserError as e:
             raise InvalidQuery(e)
 
