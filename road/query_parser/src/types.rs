@@ -14,7 +14,7 @@ pub enum Modifier {
     Or {
         queries: Vec<Query>,
     },
-    Not{
+    Not {
         query: Box<Query>,
     },
 }
