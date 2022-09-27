@@ -5,7 +5,7 @@ services:
     build:
       dockerfile: Dockerfile
     command: gunicorn wsgi:application --bind 0.0.0.0:8000
-    environment:
-      - DJANGO_SETTINGS_MODULE=settings.production
+    env_file:
+      - ${ENV_FILE}
     ports:
       - "8000:8000"
