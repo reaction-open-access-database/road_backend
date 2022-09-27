@@ -11,6 +11,7 @@ django-rdkit @ git+https://github.com/rdkit/django-rdkit.git@cd1d69af3fb024dae1c
 django-rest-knox==4.2.0
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.0
+gunicorn==20.1.0
 idna==3.3
 maturin==0.13.2
 numpy==1.23.2
