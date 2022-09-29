@@ -9,3 +9,16 @@ services:
       - ${ENV_FILE}
     ports:
       - "8000:8000"
+    volumes:
+      - static_volume:/home/app/road/static
+  nginx:
+    build: ./nginx
+    depends_on:
+      - web
+    volumes:
+      - static_volume:/static
+    ports:
+      - "8001:80"
+
+volumes:
+  static_volume:
