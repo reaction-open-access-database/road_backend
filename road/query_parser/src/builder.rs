@@ -1,6 +1,9 @@
+use std::cmp::Ordering;
+use std::collections::HashMap;
 use pyo3::{PyResult, ToPyObject};
 use pyo3::types::PyDict;
 use crate::types::{Modifier, Molecule, Quantity, Query, QueryParserError, StructureOp, Q, AMW};
+use periodic_table_on_an_enum::Element;
 
 pub fn build_query(query: Query, q: &Q) -> PyResult<&Q> {
     match query {
@@ -71,8 +74,31 @@ fn build_quantity(quantity: Quantity, q: &Q) -> PyResult<&Q> {
                     create_q("molecule__amw__lte", value, q)
                 },
             }
+        },
+        Quantity::MolecularFormula { atoms } => {
+            let atoms = atoms.into_iter().map(|(e, c)| (e.0, c)).collect();
+            let molecular_formula = create_molecular_formula(atoms);
+            create_q("molecule__mol_formula", molecular_formula, q)
         }
     }
+}
+
+fn create_molecular_formula(atoms: HashMap<Element, u32>) -> String {
+    let mut atom_list: Vec<(Element, u32)> = atoms.into_iter().collect();
+    atom_list.sort_by(
+        |a, b| if a.0 == Element::Carbon {
+            Ordering::Less
+        } else if b.0 == Element::Carbon {
+            Ordering::Greater
+        } else {
+            a.0.cmp(&b.0)
+        }
+    );
+    atom_list
+        .iter()
+        .map(|(element, count)| if *count == 1 { element.get_symbol().to_string() } else { format!("{}{}", element.get_symbol(), count) })
+        .collect::<Vec<String>>()
+        .join("")
 }
 
 fn create_q<'a, T>(key: &'a str, value: T, q: &'a Q) -> PyResult<&'a Q>
@@ -93,4 +119,39 @@ fn or<'a>(x: &'a Q, y: &'a Q) -> PyResult<&'a Q> {
 
 fn not(x: &Q) -> PyResult<&Q> {
     x.call_method0("__invert__")
+}
+
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_create_molecular_formula() {
+        use super::create_molecular_formula;
+        use std::collections::HashMap;
+        use periodic_table_on_an_enum::Element;
+
+        // Methane
+        let mut atoms = HashMap::new();
+        atoms.insert(Element::Carbon, 1);
+        atoms.insert(Element::Hydrogen, 4);
+        assert_eq!(create_molecular_formula(atoms), "CH4");
+
+        // Ethane
+        let mut atoms = HashMap::new();
+        atoms.insert(Element::Carbon, 2);
+        atoms.insert(Element::Hydrogen, 6);
+        assert_eq!(create_molecular_formula(atoms), "C2H6");
+
+        let mut atoms = HashMap::new();
+        atoms.insert(Element::Carbon, 1);
+        atoms.insert(Element::Hydrogen, 3);
+        atoms.insert(Element::Nitrogen, 1);
+        atoms.insert(Element::Oxygen, 1);
+        assert_eq!(create_molecular_formula(atoms), "CH3NO");
+
+        let mut atoms = HashMap::new();
+        atoms.insert(Element::Carbon, 1);
+        atoms.insert(Element::Oxygen, 2);
+        assert_eq!(create_molecular_formula(atoms), "CO2");
+    }
 }

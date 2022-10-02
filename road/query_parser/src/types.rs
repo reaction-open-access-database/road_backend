@@ -1,5 +1,7 @@
 use pyo3::{create_exception, PyAny};
-use serde::{Serialize, Deserialize};
+use serde::{Serialize, Deserialize, Serializer, de};
+use std::collections::HashMap;
+use periodic_table_on_an_enum::Element;
 
 create_exception!(query_parser, QueryParserError, pyo3::exceptions::PyException);
 
@@ -59,6 +61,9 @@ pub enum Quantity {
     AMW {
         amw: AMW,
     },
+    MolecularFormula {
+        atoms: HashMap<SerializableElement, u32>, // Element, count
+    },
 }
 
 #[derive(Serialize, Deserialize)]
@@ -78,4 +83,33 @@ pub enum Molecule {
     Smiles {
         value: String,
     },
+}
+
+#[derive(Hash, Eq, PartialEq)]
+pub struct SerializableElement(pub Element);
+
+impl<'de> Deserialize<'de> for SerializableElement {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = match String::deserialize(deserializer) {
+            Ok(s) => s,
+            Err(e) => return Err(de::Error::custom(e)),
+        };
+        let element = match Element::from_symbol(&s) {
+            Some(element) => element,
+            None => return Err(de::Error::custom("Invalid element symbol")),
+        };
+        Ok(SerializableElement(element))
+    }
+}
+
+impl Serialize for SerializableElement {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&self.0.get_symbol())
+    }
 }
