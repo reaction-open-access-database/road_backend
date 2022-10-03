@@ -10,6 +10,11 @@ class Molecule(models.Model):
     molecule = models.MolField()
     owner = models.ForeignKey(User, on_delete=models.RESTRICT,
                               related_name='molecules')
+    molecular_formula = models.CharField(max_length=256)
+
+    def save(self, *args, **kwargs):
+        self.molecular_formula = Chem.rdMolDescriptors.CalcMolFormula(self.molecule)
+        super().save(*args, **kwargs)
 
     def get_inchi(self):
         return Chem.MolToInchi(self.molecule)

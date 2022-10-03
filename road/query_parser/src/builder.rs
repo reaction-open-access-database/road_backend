@@ -78,7 +78,7 @@ fn build_quantity(quantity: Quantity, q: &Q) -> PyResult<&Q> {
         Quantity::MolecularFormula { atoms } => {
             let atoms = atoms.into_iter().map(|(e, c)| (e.0, c)).collect();
             let molecular_formula = create_molecular_formula(atoms);
-            create_q("molecule__mol_formula", molecular_formula, q)
+            create_q("molecular_formula", molecular_formula, q)
         }
     }
 }
