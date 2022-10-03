@@ -13,6 +13,7 @@ class Molecule(models.Model):
     molecular_formula = models.CharField(max_length=256)
 
     def save(self, *args, **kwargs):
+        Chem.SanitizeMol(self.molecule)
         self.molecular_formula = Chem.rdMolDescriptors.CalcMolFormula(self.molecule)
         super().save(*args, **kwargs)
 
