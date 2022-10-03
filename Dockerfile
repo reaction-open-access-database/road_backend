@@ -22,8 +22,9 @@ RUN pip install -r requirements.txt
 
 # Build rust dependencies
 RUN mkdir -p ./road/query_parser
-COPY ./road/query_parser/recipe.json ./road/query_parser/
+COPY ./road/query_parser/Cargo.toml ./road/query_parser/
 WORKDIR $DOCKER_HOME/road/query_parser
+RUN cargo chef prepare
 RUN cargo chef cook --release
 WORKDIR $DOCKER_HOME
 
