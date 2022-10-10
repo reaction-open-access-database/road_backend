@@ -14,7 +14,7 @@ jobs:
           python-version: "3.10"
 
       - name: Build database Docker image
-        run: docker build -t postgres -f database-dockerfile .github
+        run: docker build -t postgres ./.github/database
 
       - name: Run database Docker image
         env:
