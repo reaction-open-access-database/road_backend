@@ -62,17 +62,19 @@ class RDKitMoleculeInchiField(serializers.Field):
 
 
 class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
-    json = RDKitMoleculeJSONField(source='*')
-    smiles = RDKitMoleculeSmilesField(source='*')
-    inchi = RDKitMoleculeInchiField(source='*')
+    json = RDKitMoleculeJSONField(source='*', required=False)
+    smiles = RDKitMoleculeSmilesField(source='*', required=False)
+    inchi = RDKitMoleculeInchiField(source='*', required=False)
 
     class Meta:
         model = Molecule
         fields = ['url', 'name', 'json', 'smiles', 'inchi']
 
-    def create(self, validated_data):
-        # Ensure that only one of the JSON, SMILES and InChI representations
-        # were provided
+    def validate(self, validated_data):
+        validated_data.setdefault('json', None)
+        validated_data.setdefault('smiles', None)
+        validated_data.setdefault('inchi', None)
+
         representations = (
             validated_data.pop('json'),
             validated_data.pop('smiles'),
@@ -88,9 +90,7 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
                 'Exactly one of JSON, SMILES or InChI must be provided.'
             )
 
-        return super().create(validated_data)
-
-    # TODO: Override update as well
+        return validated_data
 
 
 class ReactionSerializer(serializers.HyperlinkedModelSerializer):

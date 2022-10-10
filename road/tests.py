@@ -1,14 +1,17 @@
-from django.test import TestCase
 from .models import Molecule, Reaction, ReactionComponent
 from rdkit.Chem import AllChem
 from django_rdkit.config import config
 from .services import reaction_create, get_reactions_for_molecule
 from django.contrib.auth.models import User
+from rest_framework.test import APITestCase
+from django.urls import reverse
+from rest_framework import status
 
 
-class MoleculeTest(TestCase):
+class MoleculeTest(APITestCase):
     def setUp(self) -> None:
         self._user = User.objects.create_user('test')
+        self.client.force_authenticate(user=self._user)
 
     def test_simple_smiles_molecules(self):
         molecules = (
@@ -40,6 +43,47 @@ class MoleculeTest(TestCase):
         for molecule in molecules:
             self.assertEqual(1, Molecule.objects.filter(molecule=molecule).count())
 
+    def test_create_molecule_smiles(self):
+        smiles = 'O=O'
+        name = 'oxygen'
+        response = self.client.post(reverse('molecule-list'), {'name': name, 'smiles': smiles}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Molecule.objects.count(), 1)
+        self.assertEqual(AllChem.MolToSmiles(Molecule.objects.get().molecule), smiles)
+        self.assertEqual(Molecule.objects.get().name, 'oxygen')
+        self.assertEqual(Molecule.objects.get().owner, self._user)
+
+    def test_create_molecule_inchi(self):
+        inchi = 'InChI=1S/C3H7NO2/c1-2(4)3(5)6/h2H,4H2,1H3,(H,5,6)/t2-/m0/s1'
+        name = 'l-alanine'
+        response = self.client.post(reverse('molecule-list'), {'name': name, 'inchi': inchi}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Molecule.objects.count(), 1)
+        self.assertEqual(AllChem.MolToInchi(Molecule.objects.get().molecule), inchi)
+        self.assertEqual(Molecule.objects.get().name, 'l-alanine')
+        self.assertEqual(Molecule.objects.get().owner, self._user)
+
+    def test_create_molecule_json(self):
+        molecule = AllChem.MolFromSmiles('C=C-C')
+        json = AllChem.MolToJSON(molecule)
+        name = 'propene'
+        response = self.client.post(reverse('molecule-list'), {'name': name, 'json': json}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Molecule.objects.count(), 1)
+        self.assertEqual(AllChem.MolToInchi(Molecule.objects.get().molecule), AllChem.MolToInchi(molecule))
+        self.assertEqual(Molecule.objects.get().name, 'propene')
+        self.assertEqual(Molecule.objects.get().owner, self._user)
+
+    def test_create_molecule_nothing(self):
+        name = 'nothing'
+        response = self.client.post(reverse('molecule-list'), {'name': name}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Molecule.objects.count(), 0)
+
     # def test_molecular_formula(self):
     #     pass
 
@@ -50,7 +94,7 @@ class MoleculeTest(TestCase):
     #     pass
 
 
-class ReactionTest(TestCase):
+class ReactionTest(APITestCase):
     def setUp(self) -> None:
         self._user = User.objects.create_user('test')
     # def test_simple_reaction(self):
@@ -78,7 +122,7 @@ class ReactionTest(TestCase):
         self.assertEqual(1, get_reactions_for_molecule('[OH-]').count())
 
 
-class UserAccountTest(TestCase):
+class UserAccountTest(APITestCase):
     def setUp(self) -> None:
         self._user = User.objects.create_user('test')
     # def test_create_user(self):
