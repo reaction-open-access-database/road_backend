@@ -13,7 +13,20 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Set up environment
+      - name: Build database Docker image
+        run: docker build -t postgres -f .github/database-dockerfile
+
+      - name: Run database Docker image
+        env:
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: docker run -d -p 5432:5432 postgres
+
+      - name: Build Docker image
+        run: docker build -t road .
+
+      - name: Run Docker container
         env:
           DJANGO_SETTINGS_MODULE: settings.test
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -21,18 +34,4 @@ jobs:
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_HOST: localhost
-          POSTGRES_DB: ${{ secrets.DB_NAME }}
-          POSTGRES_USER: ${{ secrets.DB_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-      - name: Build database Docker image
-        run: docker build -t postgres -f .github/database-dockerfile
-
-      - name: Run database Docker image
-        run: docker run -d -p 5432:5432 postgres
-
-      - name: Build Docker image
-        run: docker build -t road .
-
-      - name: Run Docker container
         run: docker run road python manage.py test
