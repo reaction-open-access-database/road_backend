@@ -1,8 +1,10 @@
 mod types;
 mod builder;
 
+use std::collections::HashMap;
 use pyo3::prelude::*;
-use crate::types::QueryParserError;
+use crate::types::{QueryParserError, SerializableElement};
+use periodic_table_on_an_enum::Element;
 
 #[pyfunction]
 fn build_molecule_query<'a>(input: &'a str, q: &'a PyAny) -> PyResult<&'a PyAny> {
@@ -15,6 +17,10 @@ fn build_molecule_query<'a>(input: &'a str, q: &'a PyAny) -> PyResult<&'a PyAny>
 
 #[pyfunction]
 fn generate_example_json() -> PyResult<String> {
+    let mut atom_hashmap = HashMap::new();
+    atom_hashmap.insert(SerializableElement(Element::Carbon), 1);
+    atom_hashmap.insert(SerializableElement(Element::Hydrogen), 4);
+
     let query = types::Query::Modifier {
         query: types::Modifier::And {
             queries: vec![
@@ -38,6 +44,11 @@ fn generate_example_json() -> PyResult<String> {
                         },
                     },
                 },
+                types::Query::Quantity {
+                    query: types::Quantity::MolecularFormula {
+                        atoms: atom_hashmap,
+                    }
+                }
             ],
         },
     };

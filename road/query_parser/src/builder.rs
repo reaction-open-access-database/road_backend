@@ -46,7 +46,7 @@ fn build_quantity(quantity: Quantity, q: &Q) -> PyResult<&Q> {
                 Molecule::Smiles { value: smiles } => smiles,
             };
             create_q(match op {
-                StructureOp::Equal => "molecule__equal",
+                StructureOp::Equal => "molecule",
                 StructureOp::HasSubstruct => "molecule__has_substruct",
                 StructureOp::IsSubstruct => "molecule__is_substruct",
             }, value, q)
