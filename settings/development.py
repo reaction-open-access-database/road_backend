@@ -8,7 +8,7 @@ from .base import *
 # Development settings
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ['ALLOWED_HOST']]
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
