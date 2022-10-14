@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use pyo3::{PyResult, ToPyObject};
 use pyo3::types::PyDict;
-use crate::types::{Modifier, Molecule, Quantity, Query, QueryParserError, StructureOp, Q, AMW};
+use crate::types::{Modifier, Molecule, Quantity, Query, QueryParserError, StructureOp, Q, MolecularWeight};
 use periodic_table_on_an_enum::Element;
 
 pub fn build_query(query: Query, q: &Q) -> PyResult<&Q> {
@@ -51,9 +51,9 @@ fn build_quantity(quantity: Quantity, q: &Q) -> PyResult<&Q> {
                 StructureOp::IsSubstruct => "molecule__is_substruct",
             }, value, q)
         },
-        Quantity::AMW { amw } => {
+        Quantity::MolecularWeight { molecular_weight: amw } => {
             match amw {
-                AMW::Equal { value, tolerance } => {
+                MolecularWeight::Equal { value, tolerance } => {
                     let lower = value - tolerance;
                     let upper = value + tolerance;
                     and(
@@ -61,16 +61,16 @@ fn build_quantity(quantity: Quantity, q: &Q) -> PyResult<&Q> {
                         create_q("molecule__amw__lte", upper, q)?
                     )
                 },
-                AMW::GreaterThan { value } => {
+                MolecularWeight::GreaterThan { value } => {
                     create_q("molecule__amw__gt", value, q)
                 },
-                AMW::GreaterThanOrEqual { value } => {
+                MolecularWeight::GreaterThanOrEqual { value } => {
                     create_q("molecule__amw__gte", value, q)
                 },
-                AMW::LessThan { value } => {
+                MolecularWeight::LessThan { value } => {
                     create_q("molecule__amw__lt", value, q)
                 },
-                AMW::LessThanOrEqual { value } => {
+                MolecularWeight::LessThanOrEqual { value } => {
                     create_q("molecule__amw__lte", value, q)
                 },
             }

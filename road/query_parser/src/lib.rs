@@ -31,8 +31,8 @@ fn generate_example_json() -> PyResult<String> {
                     },
                 },
                 types::Query::Quantity {
-                    query: types::Quantity::AMW {
-                        amw: types::AMW::Equal {
+                    query: types::Quantity::MolecularWeight {
+                        molecular_weight: types::MolecularWeight::Equal {
                             value: 0.0,
                             tolerance: 0.0
                         },
