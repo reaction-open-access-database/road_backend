@@ -31,7 +31,7 @@ pub enum StructureOp {
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "lowercase", tag = "type")]
-pub enum AMW {
+pub enum MolecularWeight {
     Equal {
         value: f64,
         tolerance: f64,
@@ -58,8 +58,8 @@ pub enum Quantity {
         op: StructureOp,
         value: Molecule
     },
-    AMW {
-        amw: AMW,
+    MolecularWeight {
+        molecular_weight: MolecularWeight,
     },
     MolecularFormula {
         atoms: HashMap<SerializableElement, u32>, // Element, count
