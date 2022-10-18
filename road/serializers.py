@@ -3,6 +3,7 @@ from .exceptions import InvalidMolecule
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rdkit import Chem
+from rdkit.Chem.Draw import rdMolDraw2D
 import json
 
 
@@ -65,10 +66,11 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
     json = RDKitMoleculeJSONField(source='*', required=False)
     smiles = RDKitMoleculeSmilesField(source='*', required=False)
     inchi = RDKitMoleculeInchiField(source='*', required=False)
+    svg = serializers.SerializerMethodField()
 
     class Meta:
         model = Molecule
-        fields = ['url', 'name', 'json', 'smiles', 'inchi']
+        fields = ['url', 'name', 'json', 'smiles', 'inchi', 'svg']
 
     def validate(self, validated_data):
         validated_data.setdefault('json', None)
@@ -91,6 +93,12 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
             )
 
         return validated_data
+
+    def get_svg(self, obj):
+        drawer = rdMolDraw2D.MolDraw2DSVG(300, 300)
+        drawer.DrawMolecule(obj.molecule)
+        drawer.FinishDrawing()
+        return drawer.GetDrawingText().replace('svg:', '')
 
 
 class ReactionSerializer(serializers.HyperlinkedModelSerializer):
