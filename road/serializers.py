@@ -95,7 +95,7 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
         return validated_data
 
     def get_svg(self, obj):
-        drawer = rdMolDraw2D.MolDraw2DSVG(300, 300)
+        drawer = rdMolDraw2D.MolDraw2DSVG(200, 200)
         drawer.DrawMolecule(obj.molecule)
         drawer.FinishDrawing()
         return drawer.GetDrawingText().replace('svg:', '')
