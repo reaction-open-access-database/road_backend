@@ -169,5 +169,3 @@ LOGIN_URL = '/login/'
 
 if 'CORS_ORIGIN_WHITELIST' in os.environ:
     CORS_ORIGIN_WHITELIST = os.environ['CORS_ORIGIN_WHITELIST'].split(',')
-
-CORS_ALLOW_CREDENTIALS = True
