@@ -141,7 +141,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
@@ -158,8 +159,6 @@ REST_AUTH_SERIALIZERS = {
 }
 
 SITE_ID = 1
-REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'road-auth'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
