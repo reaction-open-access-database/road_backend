@@ -67,10 +67,12 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
     smiles = RDKitMoleculeSmilesField(source='*', required=False)
     inchi = RDKitMoleculeInchiField(source='*', required=False)
     svg = serializers.SerializerMethodField()
+    mw = serializers.SerializerMethodField()
+    formula = serializers.SerializerMethodField()
 
     class Meta:
         model = Molecule
-        fields = ['url', 'name', 'json', 'smiles', 'inchi', 'svg']
+        fields = ['url', 'name', 'json', 'smiles', 'inchi', 'svg', 'mw', 'formula']
 
     def validate(self, validated_data):
         validated_data.setdefault('json', None)
@@ -99,6 +101,12 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
         drawer.DrawMolecule(obj.molecule)
         drawer.FinishDrawing()
         return drawer.GetDrawingText().replace('svg:', '')
+
+    def get_mw(self, obj):
+        return Chem.rdMolDescriptors.CalcExactMolWt(obj.molecule)
+
+    def get_formula(self, obj):
+        return Chem.rdMolDescriptors.CalcMolFormula(obj.molecule)
 
 
 class ReactionSerializer(serializers.HyperlinkedModelSerializer):
