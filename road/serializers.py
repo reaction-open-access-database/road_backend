@@ -69,10 +69,11 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
     svg = serializers.SerializerMethodField()
     mw = serializers.SerializerMethodField()
     formula = serializers.SerializerMethodField()
+    id = serializers.ReadOnlyField()
 
     class Meta:
         model = Molecule
-        fields = ['url', 'name', 'json', 'smiles', 'inchi', 'svg', 'mw', 'formula']
+        fields = ['url', 'name', 'json', 'smiles', 'inchi', 'svg', 'mw', 'formula', 'id']
 
     def validate(self, validated_data):
         validated_data.setdefault('json', None)
