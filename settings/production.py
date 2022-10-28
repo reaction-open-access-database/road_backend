@@ -4,7 +4,7 @@ from .base import *
 # Production settings
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ['ALLOWED_HOST']]
+ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
