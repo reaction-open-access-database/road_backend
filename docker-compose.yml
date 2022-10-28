@@ -18,7 +18,7 @@ services:
     volumes:
       - static_volume:/static
     ports:
-      - "80:80"
+      - "80:8000"
 
 volumes:
   static_volume:
