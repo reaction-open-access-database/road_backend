@@ -10,6 +10,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [os.environ['ALLOWED_HOST']]
 
+ADMIN_URL = 'admin/'
+
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = os.environ['EMAIL_HOST']
