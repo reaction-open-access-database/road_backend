@@ -11,6 +11,8 @@ services:
       - 8000
     volumes:
       - static_volume:/home/app/road/static
+      - ${CERT_DIR}/fullchain.pem:/fullchain.pem
+      - ${CERT_DIR}/privkey.key:/privkey.key
   nginx:
     build: ./nginx
     depends_on:
@@ -19,6 +21,7 @@ services:
       - static_volume:/static
     ports:
       - "8000:80"
+      - "8001:443"
 
 volumes:
   static_volume:
