@@ -164,7 +164,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-LOGIN_URL = '/login/'
+LOGIN_URL = 'https://reaction-open-access-database.tech/accounts/login/'
 
 if 'CORS_ORIGIN_WHITELIST' in os.environ:
     CORS_ORIGIN_WHITELIST = os.environ['CORS_ORIGIN_WHITELIST'].split(',')
