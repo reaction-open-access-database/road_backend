@@ -1,12 +1,14 @@
 from django.urls import path, include
-from rest_framework import routers
-from .views import MoleculeViewSet, ReactionViewSet, ReactionComponentViewSet, \
-    UserViewSet, MoleculeQueryView
+from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import VerifyEmailView, RegisterView, \
     ConfirmEmailView, ResendEmailVerificationView
 from dj_rest_auth.views import LoginView, LogoutView
+from rest_framework import routers
 from rest_framework_simplejwt.views import TokenVerifyView
-from dj_rest_auth.jwt_auth import get_refresh_view
+
+from .views import MoleculeViewSet, ReactionViewSet, ReactionComponentViewSet, \
+    UserViewSet, MoleculeQueryView
+
 
 router = routers.DefaultRouter()
 router.register('molecules', MoleculeViewSet)
