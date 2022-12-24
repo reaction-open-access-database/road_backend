@@ -143,6 +143,6 @@ class ReactionTest(APITestCase):
 class UserAccountTest(APITestCase):
     def setUp(self) -> None:
         self._user = User.objects.create_user('test')
+
     # def test_create_user(self):
     #     pass
-    pass
