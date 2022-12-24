@@ -7,8 +7,12 @@ from query_parser import build_molecule_query, QueryParserError
 from .exceptions import ParameterNotProvided, InvalidQuery
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
 from .permissions import IsOwner, IsSuperUser, ReadOnly
-from .serializers import MoleculeSerializer, ReactionSerializer, \
-    ReactionComponentSerializer, UserProfileSerializer
+from .serializers import (
+    MoleculeSerializer,
+    ReactionSerializer,
+    ReactionComponentSerializer,
+    UserProfileSerializer,
+)
 
 
 class HideUnauthorised:
@@ -50,18 +54,18 @@ class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):
     def get_permissions(self):
         # Allow users to view and edit their own profiles,
         # but only superusers to view and edit all profiles
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             self.permission_classes = [IsOwner | IsSuperUser]
-        elif self.action == 'list':
+        elif self.action == "list":
             self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
 
 class QueryView(ListAPIView):
     def _get_query(self):
-        query = self.request.query_params.get('query')
+        query = self.request.query_params.get("query")
         if not query:
-            raise ParameterNotProvided('query parameter is required')
+            raise ParameterNotProvided("query parameter is required")
 
         return query
 

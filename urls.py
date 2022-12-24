@@ -19,5 +19,5 @@ from django.conf import settings
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
-    path('', include('road.urls')),
+    path("", include("road.urls")),
 ]
