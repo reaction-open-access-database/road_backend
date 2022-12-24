@@ -10,10 +10,15 @@ from .exceptions import InvalidMolecule
 
 
 class RDKitMoleculeJSONField(serializers.Field):
+    """
+    A field that serializes and deserializes RDKit molecules to and from JSON.
+    """
     def to_representation(self, value):
+        """Convert the RDKit molecule to JSON."""
         return json.loads(Chem.MolToJSON(value.molecule))
 
     def to_internal_value(self, data):
+        """Convert the JSON to an RDKit molecule."""
         if data == '':
             return {'json': None}
 
@@ -37,10 +42,15 @@ class RDKitMoleculeJSONField(serializers.Field):
 
 
 class RDKitMoleculeSmilesField(serializers.Field):
+    """
+    A field that serializes and deserializes RDKit molecules to and from SMILES.
+    """
     def to_representation(self, value):
+        """Convert the RDKit molecule to SMILES."""
         return Chem.MolToSmiles(value.molecule)
 
     def to_internal_value(self, data):
+        """Convert the SMILES to an RDKit molecule."""
         if data == '':
             return {'smiles': None}
 
@@ -51,10 +61,15 @@ class RDKitMoleculeSmilesField(serializers.Field):
 
 
 class RDKitMoleculeInchiField(serializers.Field):
+    """
+    A field that serializes and deserializes RDKit molecules to and from InChI strings.
+    """
     def to_representation(self, value):
+        """Convert the RDKit molecule to an InChI string."""
         return Chem.MolToInchi(value.molecule)
 
     def to_internal_value(self, data):
+        """Convert an InChI string to an RDKit molecule."""
         if data == '':
             return {'inchi': None}
 
@@ -65,6 +80,11 @@ class RDKitMoleculeInchiField(serializers.Field):
 
 
 class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    A serializer for the Molecule model.
+    Displays the JSON, SMILES, InChI and SVG representations of the molecule.
+    Also includes the name, molecular weight and molecular formula.
+    """
     json = RDKitMoleculeJSONField(source='*', required=False)
     smiles = RDKitMoleculeSmilesField(source='*', required=False)
     inchi = RDKitMoleculeInchiField(source='*', required=False)
