@@ -27,7 +27,7 @@ class MoleculeViewSet(viewsets.ModelViewSet):
 class ReactionViewSet(viewsets.ModelViewSet):
     queryset = Reaction.objects.all()
     serializer_class = ReactionSerializer
-    permission_classes = [IsSuperUser | IsOwner | ReadOnly]
+    permission_classes = [IsSuperUser | ReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -36,7 +36,7 @@ class ReactionViewSet(viewsets.ModelViewSet):
 class ReactionComponentViewSet(viewsets.ModelViewSet):
     queryset = ReactionComponent.objects.all()
     serializer_class = ReactionComponentSerializer
-    permission_classes = [IsSuperUser | IsOwner | ReadOnly]
+    permission_classes = [IsSuperUser | ReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
