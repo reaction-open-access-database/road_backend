@@ -1,5 +1,5 @@
 # Base settings
-from .base import *
+from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
 # Production settings
 DEBUG = False
