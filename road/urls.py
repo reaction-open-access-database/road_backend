@@ -26,6 +26,7 @@ urlpatterns = [
     path('resend-email-verification/', ResendEmailVerificationView.as_view()),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('token/refresh/', get_refresh_view().as_view(), name='token_refresh'),
-    path('account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
+    path('account-confirm-email/', VerifyEmailView.as_view(),
+         name='account_email_verification_sent'),
     path('account-confirm-email/<key>/', ConfirmEmailView.as_view(), name='account_confirm_email'),
 ]
