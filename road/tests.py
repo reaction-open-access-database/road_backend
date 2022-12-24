@@ -1,11 +1,12 @@
-from .models import Molecule, Reaction, ReactionComponent
-from rdkit.Chem import AllChem
-from django_rdkit.config import config
-from .services import reaction_create, get_reactions_for_molecule
 from django.contrib.auth.models import User
-from rest_framework.test import APITestCase
 from django.urls import reverse
+from django_rdkit.config import config
+from rdkit.Chem import AllChem
 from rest_framework import status
+from rest_framework.test import APITestCase
+
+from .models import Molecule, Reaction, ReactionComponent
+from .services import reaction_create, get_reactions_for_molecule
 
 
 class MoleculeTest(APITestCase):

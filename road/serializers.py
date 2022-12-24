@@ -1,10 +1,12 @@
-from .models import Molecule, Reaction, ReactionComponent, UserProfile
-from .exceptions import InvalidMolecule
-from rest_framework import serializers
+import json
+
 from django.contrib.auth.models import User
 from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
-import json
+from rest_framework import serializers
+
+from .models import Molecule, Reaction, ReactionComponent, UserProfile
+from .exceptions import InvalidMolecule
 
 
 class RDKitMoleculeJSONField(serializers.Field):
