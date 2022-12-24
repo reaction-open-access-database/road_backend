@@ -44,7 +44,8 @@ def reaction_create(rdkit_reaction: AllChem.ChemicalReaction, owner: User) -> Re
     return reaction
 
 
-def reaction_component_create(reaction: Reaction, molecule, component_type: ReactionComponent.ComponentType,
+def reaction_component_create(reaction: Reaction, molecule,
+                              component_type: ReactionComponent.ComponentType,
                               owner: User) -> ReactionComponent:
     molecule = molecule_get_or_create(molecule, owner)
     return ReactionComponent.objects.create(
