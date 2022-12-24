@@ -31,8 +31,12 @@ class MoleculeTest(APITestCase):
         config.do_chiral_sss = True
         molecules = (
             # InChI
-            AllChem.MolFromInchi('InChI=1S/C3H7NO2/c1-2(4)3(5)6/h2H,4H2,1H3,(H,5,6)/t2-/m0/s1'),  # l-alanine
-            AllChem.MolFromInchi('InChI=1S/C3H7NO2/c1-2(4)3(5)6/h2H,4H2,1H3,(H,5,6)/t2-/m1/s1'),  # r-alanine
+            AllChem.MolFromInchi(
+                'InChI=1S/C3H7NO2/c1-2(4)3(5)6/h2H,4H2,1H3,(H,5,6)/t2-/m0/s1'
+            ),  # l-alanine
+            AllChem.MolFromInchi(
+                'InChI=1S/C3H7NO2/c1-2(4)3(5)6/h2H,4H2,1H3,(H,5,6)/t2-/m1/s1'
+            ),  # r-alanine
             # SMILES
             AllChem.MolFromSmiles('C[C@@H](N)O'),  # (1S)-1-Aminoethanol
         )
@@ -47,7 +51,8 @@ class MoleculeTest(APITestCase):
     def test_create_molecule_smiles(self):
         smiles = 'O=O'
         name = 'oxygen'
-        response = self.client.post(reverse('molecule-list'), {'name': name, 'smiles': smiles}, format='json')
+        response = self.client.post(reverse('molecule-list'), {'name': name, 'smiles': smiles},
+                                    format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Molecule.objects.count(), 1)
@@ -58,7 +63,8 @@ class MoleculeTest(APITestCase):
     def test_create_molecule_inchi(self):
         inchi = 'InChI=1S/C3H7NO2/c1-2(4)3(5)6/h2H,4H2,1H3,(H,5,6)/t2-/m0/s1'
         name = 'l-alanine'
-        response = self.client.post(reverse('molecule-list'), {'name': name, 'inchi': inchi}, format='json')
+        response = self.client.post(reverse('molecule-list'), {'name': name, 'inchi': inchi},
+                                    format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Molecule.objects.count(), 1)
@@ -70,11 +76,13 @@ class MoleculeTest(APITestCase):
         molecule = AllChem.MolFromSmiles('C=C-C')
         json = AllChem.MolToJSON(molecule)
         name = 'propene'
-        response = self.client.post(reverse('molecule-list'), {'name': name, 'json': json}, format='json')
+        response = self.client.post(reverse('molecule-list'), {'name': name, 'json': json},
+                                    format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Molecule.objects.count(), 1)
-        self.assertEqual(AllChem.MolToInchi(Molecule.objects.get().molecule), AllChem.MolToInchi(molecule))
+        self.assertEqual(AllChem.MolToInchi(Molecule.objects.get().molecule),
+                         AllChem.MolToInchi(molecule))
         self.assertEqual(Molecule.objects.get().name, 'propene')
         self.assertEqual(Molecule.objects.get().owner, self._user)
 
@@ -116,9 +124,18 @@ class ReactionTest(APITestCase):
 
         self.assertEqual(2, Reaction.objects.count())
         self.assertEqual(1, get_reactions_for_molecule('CCl').count())
-        self.assertEqual(1, get_reactions_for_molecule('CCl', ReactionComponent.ComponentType.REACTANT).count())
-        self.assertEqual(0, get_reactions_for_molecule('CCl', ReactionComponent.ComponentType.PRODUCT).count())
-        self.assertEqual(0, get_reactions_for_molecule('CCl', ReactionComponent.ComponentType.AGENT).count())
+        self.assertEqual(
+            1,
+            get_reactions_for_molecule('CCl', ReactionComponent.ComponentType.REACTANT).count()
+        )
+        self.assertEqual(
+            0,
+            get_reactions_for_molecule('CCl', ReactionComponent.ComponentType.PRODUCT).count()
+        )
+        self.assertEqual(
+            0,
+            get_reactions_for_molecule('CCl', ReactionComponent.ComponentType.AGENT).count()
+        )
         self.assertEqual(1, get_reactions_for_molecule('CO').count())
         self.assertEqual(1, get_reactions_for_molecule('[OH-]').count())
 
