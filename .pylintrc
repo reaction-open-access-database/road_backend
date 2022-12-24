@@ -79,8 +79,6 @@ limit-inference-results=100
 # usually to register additional checkers.
 load-plugins=pylint_django
 
-django-settings-module=settings.production
-
 # Pickle collected data for later comparisons.
 persistent=yes
 
