@@ -17,11 +17,11 @@ def get_reactions_for_molecule(
 
     if component_type is None:
         return Reaction.objects.filter(components__molecule=molecule)
-    else:
-        return Reaction.objects.filter(
-            components__molecule=molecule,
-            components__component_type=component_type
-        )
+
+    return Reaction.objects.filter(
+        components__molecule=molecule,
+        components__component_type=component_type
+    )
 
 
 @transaction.atomic
