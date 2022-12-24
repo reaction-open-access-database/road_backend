@@ -4,11 +4,7 @@ from .base import *
 # Production settings
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ['ALLOWED_HOST']]
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-ADMIN_URL = os.environ['ADMIN_URL']
 
 # SSL
 CSRF_COOKIE_SECURE = True
@@ -19,11 +15,3 @@ SECURE_SSL_REDIRECT = True
 # SECURE_HSTS_SECONDS = 60
 # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # SECURE_HSTS_PRELOAD = True
-
-# Email
-EMAIL_HOST = os.environ['EMAIL_HOST']
-EMAIL_PORT = os.environ['EMAIL_PORT']
-EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']

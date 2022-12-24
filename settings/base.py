@@ -164,7 +164,20 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-LOGIN_URL = 'https://reaction-open-access-database.tech/accounts/login/'
+LOGIN_URL = os.environ['LOGIN_URL']
 
 if 'CORS_ORIGIN_WHITELIST' in os.environ:
     CORS_ORIGIN_WHITELIST = os.environ['CORS_ORIGIN_WHITELIST'].split(',')
+
+ALLOWED_HOSTS = [os.environ['ALLOWED_HOST']]
+
+ADMIN_URL = os.environ['ADMIN_URL']
+
+
+# Email
+EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_PORT = os.environ['EMAIL_PORT']
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']
