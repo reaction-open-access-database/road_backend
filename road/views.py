@@ -1,13 +1,14 @@
+from django.db.models import Q
 from rest_framework import viewsets
-from .models import Molecule, Reaction, ReactionComponent, UserProfile
-from .serializers import MoleculeSerializer, ReactionSerializer, \
-    ReactionComponentSerializer, UserProfileSerializer
-from .permissions import IsOwner, IsSuperUser, ReadOnly
-from .exceptions import ParameterNotProvided, InvalidQuery
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
-from django.db.models import Q
 from query_parser import build_molecule_query, QueryParserError
+
+from .exceptions import ParameterNotProvided, InvalidQuery
+from .models import Molecule, Reaction, ReactionComponent, UserProfile
+from .permissions import IsOwner, IsSuperUser, ReadOnly
+from .serializers import MoleculeSerializer, ReactionSerializer, \
+    ReactionComponentSerializer, UserProfileSerializer
 
 
 class HideUnauthorised:
@@ -74,7 +75,7 @@ class MoleculeQueryView(QueryView):
 
         try:
             parsed_query = build_molecule_query(query, Q)
-        except QueryParserError as e:
-            raise InvalidQuery(e)
+        except QueryParserError as error:
+            raise InvalidQuery(error)
 
         return Molecule.objects.filter(parsed_query)
