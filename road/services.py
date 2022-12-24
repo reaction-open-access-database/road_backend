@@ -1,8 +1,10 @@
 from typing import Optional
-from rdkit.Chem import AllChem
-from django.db import transaction
-from .models import Molecule, Reaction, ReactionComponent
+
 from django.contrib.auth.models import User
+from django.db import transaction
+from rdkit.Chem import AllChem
+
+from .models import Molecule, Reaction, ReactionComponent
 
 
 def get_reactions_for_molecule(
