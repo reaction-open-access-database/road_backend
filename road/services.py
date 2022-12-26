@@ -18,7 +18,8 @@ def get_reactions_for_molecule(
     Returns the reactions associated with a particular molecule.
 
     :param molecule: The molecule to check
-    :param component_type: The reaction component type the molecule should be (reactant, product or agent), or None (default) to permit any component type
+    :param component_type: The reaction component type the molecule should be
+    (reactant, product or agent), or None (default) to permit any component type
     :return: A list of the associated reactions
     """
     try:
