@@ -23,6 +23,6 @@ jobs:
     - name: Checking code with black
       run: black --diff --check $(git ls-files '*.py')
     - name: Checking code with pylint
-      run: pylint $(git ls-files '*.py')
+      run: PYTHONPATH=$PYTHONPATH:$PWD pylint $(git ls-files '*.py')
     - name: Checking code with mypy
       run: mypy --strict $(git ls-files '*.py')
