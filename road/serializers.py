@@ -1,3 +1,7 @@
+"""
+The serializers for the ROAD REST API.
+"""
+
 import json
 
 from django.contrib.auth.models import User
@@ -84,7 +88,7 @@ class RDKitMoleculeInchiField(serializers.Field):
 
 class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
     """
-    A serializer for the Molecule model.
+    Serializer for the Molecule model.
     Displays the JSON, SMILES, InChI and SVG representations of the molecule.
     Also includes the name, molecular weight and molecular formula.
     """
@@ -147,6 +151,11 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ReactionSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer for the Reaction model.
+    Displays the components of the reaction.
+    """
+
     components = serializers.HyperlinkedRelatedField(
         many=True, read_only=True, view_name="reactioncomponent-detail"
     )
@@ -157,12 +166,22 @@ class ReactionSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ReactionComponentSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer for the ReactionComponent model.
+    Displays the reaction, the molecule and the role of the molecule in the reaction.
+    """
+
     class Meta:
         model = ReactionComponent
         fields = ["url", "reaction", "molecule", "component_type"]
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer for the UserProfile model.
+    Displays the user's username and email address.
+    """
+
     username = serializers.ReadOnlyField(source="user.username")
     email = serializers.ReadOnlyField(source="user.email")
 
@@ -172,6 +191,11 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer for the User model.
+    Displays the user's profile.
+    """
+
     profile = serializers.HyperlinkedRelatedField(
         read_only=True, view_name="userprofile-detail"
     )

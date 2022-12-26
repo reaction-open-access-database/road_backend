@@ -6,7 +6,8 @@ MoleculeTest:
 ReactionTest:
     Tests that the Reaction model is correct.
 """
-from django.contrib.auth.models import User
+
+from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.urls import reverse
 from django_rdkit.config import config
 from rdkit.Chem import AllChem
@@ -18,6 +19,8 @@ from .services import reaction_create, get_reactions_for_molecule
 
 
 class MoleculeTest(APITestCase):
+    """Tests that the Molecule model is correct."""
+
     def setUp(self) -> None:
         """Set up the dummy user for the tests."""
         self._user = User.objects.create_user("test")
@@ -128,6 +131,8 @@ class MoleculeTest(APITestCase):
 
 
 class ReactionTest(APITestCase):
+    """Tests that the Reaction model is correct."""
+
     def setUp(self) -> None:
         """Set up the dummy user for these tests."""
         self._user = User.objects.create_user("test")
@@ -173,10 +178,10 @@ class ReactionTest(APITestCase):
         self.assertEqual(1, get_reactions_for_molecule("[OH-]").count())
 
 
-class UserAccountTest(APITestCase):
-    def setUp(self) -> None:
-        """Set up the dummy user for these tests."""
-        self._user = User.objects.create_user("test")
+# class UserAccountTest(APITestCase):
+#     def setUp(self) -> None:
+#         """Set up the dummy user for these tests."""
+#         self._user = User.objects.create_user("test")
 
-    # def test_create_user(self):
-    #     pass
+# def test_create_user(self):
+#     pass

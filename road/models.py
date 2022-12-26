@@ -1,6 +1,10 @@
+"""
+The models for ROAD.
+"""
+
 from django_rdkit import models
 from rdkit import Chem
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -48,6 +52,11 @@ class ReactionComponent(models.Model):
     """
 
     class ComponentType(models.TextChoices):
+        """
+        The role of the component in the reaction.
+        One of a reactant, product, or agent.
+        """
+
         REACTANT = "reactant"
         PRODUCT = "product"
         AGENT = "agent"

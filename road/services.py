@@ -1,10 +1,10 @@
 """
-Miscellaneous functions for creating and retrieving molecules and reactions
+Miscellaneous functions for creating and retrieving molecules and reactions.
 """
 
 from typing import Optional
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.db import transaction
 from rdkit.Chem import AllChem
 

@@ -1,12 +1,16 @@
+"""
+The views and ViewSets for the ROAD REST API.
+"""
+
 # pylint: disable=too-many-ancestors
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
-from query_parser import (
+from query_parser import (  # pylint: disable=import-error
     build_molecule_query,
     QueryParserError,
-)  # pylint: disable=import-error
+)
 
 from .exceptions import ParameterNotProvided, InvalidQuery
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
@@ -19,7 +23,7 @@ from .serializers import (
 )
 
 
-class HideUnauthorised:
+class HideUnauthorised:  # pylint: disable=too-few-public-methods
     """Override the default permission_denied method to return a 404 instead of a 403."""
 
     def permission_denied(self, request, message=None, code=None):
@@ -87,7 +91,15 @@ class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):
 
 
 class QueryView(ListAPIView):
+    """
+    A view for querying the database.
+    """
+
     def _get_query(self):
+        """
+        Ensure that the query parameter is provided.
+        Returns the query parameter if present, otherwise raises ParameterNotProvided.
+        """
         query = self.request.query_params.get("query")
         if not query:
             raise ParameterNotProvided("query parameter is required")
@@ -96,6 +108,10 @@ class QueryView(ListAPIView):
 
 
 class MoleculeQueryView(QueryView):
+    """
+    A view for querying the Molecule model.
+    """
+
     serializer_class = MoleculeSerializer
     permission_classes = [ReadOnly]
 

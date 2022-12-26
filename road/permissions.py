@@ -1,5 +1,5 @@
 """
-Defines the permissions for ROAD.
+The permissions for the ROAD REST API.
 """
 
 from rest_framework.permissions import *  # pylint: disable=wildcard-import, unused-wildcard-import
