@@ -1,3 +1,4 @@
+# pylint: disable=too-many-ancestors
 from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
@@ -19,11 +20,20 @@ from .serializers import (
 
 
 class HideUnauthorised:
+    """Override the default permission_denied method to return a 404 instead of a 403."""
+
     def permission_denied(self, request, message=None, code=None):
+        """
+        Instead of returning a 403, return a 404, to conceal the existence of the resource.
+        """
         raise NotFound()
 
 
 class MoleculeViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for the Molecule model.
+    """
+
     queryset = Molecule.objects.all()
     serializer_class = MoleculeSerializer
     permission_classes = [IsSuperUser | IsOwner | ReadOnly]
@@ -33,6 +43,10 @@ class MoleculeViewSet(viewsets.ModelViewSet):
 
 
 class ReactionViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for the Reaction model.
+    """
+
     queryset = Reaction.objects.all()
     serializer_class = ReactionSerializer
     permission_classes = [IsSuperUser | ReadOnly]
@@ -42,6 +56,10 @@ class ReactionViewSet(viewsets.ModelViewSet):
 
 
 class ReactionComponentViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for the ReactionComponent model.
+    """
+
     queryset = ReactionComponent.objects.all()
     serializer_class = ReactionComponentSerializer
     permission_classes = [IsSuperUser | ReadOnly]
@@ -51,6 +69,10 @@ class ReactionComponentViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet for the UserProfile model.
+    """
+
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 

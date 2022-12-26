@@ -37,6 +37,10 @@ def get_reactions_for_molecule(
 
 @transaction.atomic
 def reaction_create(rdkit_reaction: AllChem.ChemicalReaction, owner: User) -> Reaction:
+    """
+    Creates a reaction from an RDKit reaction, with the specified owner.
+    Returns the created reaction.
+    """
     reaction = Reaction.objects.create(owner=owner)
 
     # Create the reaction components
@@ -64,6 +68,11 @@ def reaction_component_create(
     component_type: ReactionComponent.ComponentType,
     owner: User,
 ) -> ReactionComponent:
+    """
+    Creates a reaction component for a reaction and molecule.
+    Creates the molecule if it does not already exist.
+    Returns the created reaction component.
+    """
     molecule = molecule_get_or_create(molecule, owner)
     return ReactionComponent.objects.create(
         reaction=reaction,
@@ -74,6 +83,10 @@ def reaction_component_create(
 
 
 def molecule_get_or_create(rdkit_molecule, owner: User) -> Molecule:
+    """
+    Creates a molecule if it does not already exist.
+    Returns the molecule model.
+    """
     try:
         molecule = Molecule.objects.get(molecule=rdkit_molecule)
     except Molecule.DoesNotExist:

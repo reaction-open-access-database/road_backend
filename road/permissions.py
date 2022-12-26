@@ -2,7 +2,7 @@
 Defines the permissions for ROAD.
 """
 
-from rest_framework.permissions import *
+from rest_framework.permissions import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
 
 # Ensure that every class contains has_permission AND
