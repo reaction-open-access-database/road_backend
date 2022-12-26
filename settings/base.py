@@ -164,15 +164,13 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-LOGIN_URL = os.environ["LOGIN_URL"]
-
 if "CORS_ORIGIN_WHITELIST" in os.environ:
     CORS_ORIGIN_WHITELIST = os.environ["CORS_ORIGIN_WHITELIST"].split(",")
 
 ALLOWED_HOSTS = [os.environ["ALLOWED_HOST"]]
 
 ADMIN_URL = os.environ["ADMIN_URL"]
-
+LOGIN_URL = os.environ["LOGIN_URL"]
 
 # Email
 EMAIL_HOST = os.environ["EMAIL_HOST"]
