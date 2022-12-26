@@ -4,3 +4,10 @@ force-exclude = '''
   | road/migrations
 )/
 '''
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+mypy_path = "stubs"
+
+[tool.django-stubs]
+django_settings_module = "settings.test"
