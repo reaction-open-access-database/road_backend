@@ -4,7 +4,7 @@ The serializers for the ROAD REST API.
 
 import json
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 from rest_framework import serializers
@@ -34,8 +34,8 @@ class RDKitMoleculeJSONField(serializers.Field):
 
         try:
             mols = Chem.JSONToMols(json_data)
-        except RuntimeError:
-            raise InvalidMolecule("Invalid JSON data")
+        except RuntimeError as exc:
+            raise InvalidMolecule("Invalid JSON data") from exc
 
         if len(mols) != 1:
             raise InvalidMolecule(
@@ -62,8 +62,8 @@ class RDKitMoleculeSmilesField(serializers.Field):
 
         try:
             return {"smiles": Chem.MolFromSmiles(data)}
-        except ValueError:
-            raise InvalidMolecule("Invalid SMILES data")
+        except ValueError as exc:
+            raise InvalidMolecule("Invalid SMILES data") from exc
 
 
 class RDKitMoleculeInchiField(serializers.Field):
@@ -82,8 +82,8 @@ class RDKitMoleculeInchiField(serializers.Field):
 
         try:
             return {"inchi": Chem.MolFromInchi(data)}
-        except ValueError:
-            raise InvalidMolecule("Invalid InChI data")
+        except ValueError as exc:
+            raise InvalidMolecule("Invalid InChI data") from exc
 
 
 class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
@@ -115,38 +115,41 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
             "id",
         ]
 
-    def validate(self, validated_data):
-        validated_data.setdefault("json", None)
-        validated_data.setdefault("smiles", None)
-        validated_data.setdefault("inchi", None)
+    def validate(self, attrs):
+        attrs.setdefault("json", None)
+        attrs.setdefault("smiles", None)
+        attrs.setdefault("inchi", None)
 
         representations = (
-            validated_data.pop("json"),
-            validated_data.pop("smiles"),
-            validated_data.pop("inchi"),
+            attrs.pop("json"),
+            attrs.pop("smiles"),
+            attrs.pop("inchi"),
         )
 
         provided_representations = [rep for rep in representations if rep]
 
         if len(provided_representations) == 1:
-            validated_data["molecule"] = provided_representations[0]
+            attrs["molecule"] = provided_representations[0]
         else:
             raise InvalidMolecule(
                 "Exactly one of JSON, SMILES or InChI must be provided."
             )
 
-        return validated_data
+        return attrs
 
     def get_svg(self, obj):
+        """Return the text of an SVG image of the molecule."""
         drawer = rdMolDraw2D.MolDraw2DSVG(200, 200)
         drawer.DrawMolecule(obj.molecule)
         drawer.FinishDrawing()
         return drawer.GetDrawingText().replace("svg:", "")
 
     def get_mw(self, obj):
+        """Return the molecular weight of the molecule."""
         return Chem.rdMolDescriptors.CalcExactMolWt(obj.molecule)
 
     def get_formula(self, obj):
+        """Return the molecular formula of the molecule."""
         return Chem.rdMolDescriptors.CalcMolFormula(obj.molecule)
 
 

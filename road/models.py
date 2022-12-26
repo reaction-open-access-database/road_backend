@@ -109,7 +109,9 @@ class UserProfile(models.Model):
 
 # Automatically create UserProfile when a User is created
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_user_profile(
+    sender, instance, created, **kwargs
+):  # pylint: disable=unused-argument
     """Create a UserProfile when a User is created."""
     if created:
         UserProfile.objects.create(owner=instance)

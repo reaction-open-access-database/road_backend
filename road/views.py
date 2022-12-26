@@ -7,7 +7,7 @@ from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
-from query_parser import (  # pylint: disable=import-error
+from query_parser import (  # pylint: disable=import-error, no-name-in-module
     build_molecule_query,
     QueryParserError,
 )
@@ -121,6 +121,6 @@ class MoleculeQueryView(QueryView):
         try:
             parsed_query = build_molecule_query(query, Q)
         except QueryParserError as error:
-            raise InvalidQuery(error)
+            raise InvalidQuery(error) from error
 
         return Molecule.objects.filter(parsed_query)
