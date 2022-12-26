@@ -1,5 +1,9 @@
+"""
+Settings for the testing environment
+"""
+
 # Base settings
-from .base import *
+from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
 # Test settings
 DEBUG = False
