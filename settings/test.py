@@ -16,7 +16,7 @@ os.environ["LOGIN_URL"] = "login/"
 os.environ["ALLOWED_HOST"] = "localhost"
 
 # Base settings
-from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import
+from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import, wrong-import-position
 
 # Test settings
 DEBUG = False
