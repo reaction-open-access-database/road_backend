@@ -1,3 +1,7 @@
+"""
+Defines the permissions for ROAD.
+"""
+
 from rest_framework.permissions import *
 
 
@@ -6,6 +10,11 @@ from rest_framework.permissions import *
 
 
 class IsOwner(BasePermission):
+    """
+    Allows the owner of an object to view and edit it,
+    but other authenticated users to view it only.
+    """
+
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated
 
@@ -16,6 +25,8 @@ class IsOwner(BasePermission):
 
 
 class IsSuperUser(BasePermission):
+    """Allows access only to superusers."""
+
     def has_permission(self, request, view):
         return (
             request.user and request.user.is_authenticated and request.user.is_superuser
@@ -26,6 +37,8 @@ class IsSuperUser(BasePermission):
 
 
 class ReadOnly(BasePermission):
+    """Allows access only to read-only methods."""
+
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS
 
