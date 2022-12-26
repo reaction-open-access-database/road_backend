@@ -1,3 +1,7 @@
+"""
+Defines the URL routes for ROAD, including the router for the REST API.
+"""
+
 from django.urls import path, include
 from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import (

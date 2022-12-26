@@ -2,7 +2,10 @@ from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
-from query_parser import build_molecule_query, QueryParserError
+from query_parser import (
+    build_molecule_query,
+    QueryParserError,
+)  # pylint: disable=import-error
 
 from .exceptions import ParameterNotProvided, InvalidQuery
 from .models import Molecule, Reaction, ReactionComponent, UserProfile

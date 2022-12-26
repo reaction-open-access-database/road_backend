@@ -1,3 +1,7 @@
+"""
+Settings for the development environment
+"""
+
 # Load secret key, database, etc from .env file
 from dotenv import load_dotenv, find_dotenv
 
