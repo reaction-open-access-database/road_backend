@@ -40,9 +40,7 @@ class HideUnauthorised:  # pylint: disable=too-few-public-methods
         raise NotFound()
 
 
-class MoleculeViewSet(
-    viewsets.ModelViewSet[Molecule]
-):  # pylint: disable=too-few-public-methods
+class MoleculeViewSet(viewsets.ModelViewSet):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Molecule model.
     """
@@ -56,9 +54,7 @@ class MoleculeViewSet(
         serializer.save(owner=self.request.user)
 
 
-class ReactionViewSet(
-    viewsets.ModelViewSet[Reaction]
-):  # pylint: disable=too-few-public-methods
+class ReactionViewSet(viewsets.ModelViewSet):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Reaction model.
     """
@@ -73,7 +69,7 @@ class ReactionViewSet(
 
 
 class ReactionComponentViewSet(
-    viewsets.ModelViewSet[ReactionComponent]
+    viewsets.ModelViewSet
 ):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the ReactionComponent model.
@@ -88,7 +84,7 @@ class ReactionComponentViewSet(
         serializer.save(owner=self.request.user)
 
 
-class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet[UserProfile]):
+class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):
     """
     ViewSet for the UserProfile model.
     """
