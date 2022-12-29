@@ -105,7 +105,7 @@ class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):
         return super().get_permissions()
 
 
-class QueryView(ListAPIView):
+class QueryView(ListAPIView):  # type: ignore
     """
     A view for querying the database.
     """

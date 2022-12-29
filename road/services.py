@@ -40,7 +40,7 @@ def reaction_create(rdkit_reaction: ChemicalReaction, owner: User) -> Reaction:
     Creates a reaction from an RDKit reaction, with the specified owner.
     Returns the created reaction.
     """
-    reaction = Reaction.objects.create(owner=owner)
+    reaction: Reaction = Reaction.objects.create(owner=owner)
 
     # Create the reaction components
     for reactant in rdkit_reaction.GetReactants():

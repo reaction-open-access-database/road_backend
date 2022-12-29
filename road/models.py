@@ -85,10 +85,6 @@ class ReactionComponent(models.Model):
         User, on_delete=models.RESTRICT, related_name="components"
     )
 
-    def get_component_type(self) -> str:
-        """Return the component type (reactant, product or agent) as a string."""
-        return self.ComponentType[self.component_type]
-
 
 class ReactionSource(models.Model):
     """
