@@ -2,7 +2,11 @@
 The permissions for the ROAD REST API.
 """
 
-from rest_framework.permissions import *  # pylint: disable=wildcard-import, unused-wildcard-import
+from typing import Any
+
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.request import Request
+from rest_framework.views import APIView
 
 
 # Ensure that every class contains has_permission AND
@@ -15,11 +19,11 @@ class IsOwner(BasePermission):
     but other authenticated users to view it only.
     """
 
-    def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        return bool(request.user and request.user.is_authenticated)
 
-    def has_object_permission(self, request, view, obj):
-        return (
+    def has_object_permission(self, request: Request, view: APIView, obj: Any) -> bool:
+        return bool(
             request.user and request.user.is_authenticated and request.user == obj.owner
         )
 
@@ -27,20 +31,20 @@ class IsOwner(BasePermission):
 class IsSuperUser(BasePermission):
     """Allows access only to superusers."""
 
-    def has_permission(self, request, view):
-        return (
+    def has_permission(self, request: Request, view: APIView) -> bool:
+        return bool(
             request.user and request.user.is_authenticated and request.user.is_superuser
         )
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view: APIView, obj: Any) -> bool:
         return self.has_permission(request, view)
 
 
 class ReadOnly(BasePermission):
     """Allows access only to read-only methods."""
 
-    def has_permission(self, request, view):
+    def has_permission(self, request: Request, view: APIView) -> bool:
         return request.method in SAFE_METHODS
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request: Request, view: APIView, obj: Any) -> bool:
         return self.has_permission(request, view)

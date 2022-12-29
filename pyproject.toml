@@ -4,6 +4,7 @@ force-exclude = '''
   | road/migrations
 )/
 '''
+diff = true
 
 [tool.mypy]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]

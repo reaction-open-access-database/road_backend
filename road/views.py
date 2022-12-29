@@ -3,7 +3,10 @@ The views and ViewSets for the ROAD REST API.
 """
 
 # pylint: disable=too-many-ancestors
-from django.db.models import Q
+
+from typing import List, NoReturn, Any
+
+from django.db.models import Q, QuerySet
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
@@ -28,7 +31,7 @@ from .serializers import (
 class HideUnauthorised:  # pylint: disable=too-few-public-methods
     """Override the default permission_denied method to return a 404 instead of a 403."""
 
-    def permission_denied(self, request, message=None, code=None):
+    def permission_denied(self, request: Request, message: str | None = None, code: str | None = None) -> NoReturn:
         """
         Instead of returning a 403, return a 404, to conceal the existence of the resource.
         """
@@ -91,7 +94,7 @@ class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet[UserProfile]):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
-    def get_permissions(self):
+    def get_permissions(self) -> List[Any]:
         # Allow users to view and edit their own profiles,
         # but only superusers to view and edit all profiles
         if self.action == "retrieve":
@@ -126,7 +129,7 @@ class MoleculeQueryView(QueryView):
     serializer_class = MoleculeSerializer
     permission_classes = [ReadOnly]
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Molecule]:
         query = self._get_query()
 
         try:
