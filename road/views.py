@@ -4,6 +4,7 @@ The views and ViewSets for the ROAD REST API.
 
 # pylint: disable=too-many-ancestors
 
+from __future__ import annotations
 from typing import List, NoReturn, Any
 
 from django.db.models import Q, QuerySet
@@ -40,7 +41,9 @@ class HideUnauthorised:  # pylint: disable=too-few-public-methods
         raise NotFound()
 
 
-class MoleculeViewSet(viewsets.ModelViewSet):  # pylint: disable=too-few-public-methods
+class MoleculeViewSet(
+    viewsets.ModelViewSet[Molecule]
+):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Molecule model.
     """
@@ -54,7 +57,9 @@ class MoleculeViewSet(viewsets.ModelViewSet):  # pylint: disable=too-few-public-
         serializer.save(owner=self.request.user)
 
 
-class ReactionViewSet(viewsets.ModelViewSet):  # pylint: disable=too-few-public-methods
+class ReactionViewSet(
+    viewsets.ModelViewSet[Reaction]
+):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Reaction model.
     """
@@ -69,7 +74,7 @@ class ReactionViewSet(viewsets.ModelViewSet):  # pylint: disable=too-few-public-
 
 
 class ReactionComponentViewSet(
-    viewsets.ModelViewSet
+    viewsets.ModelViewSet[ReactionComponent]
 ):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the ReactionComponent model.
@@ -84,7 +89,7 @@ class ReactionComponentViewSet(
         serializer.save(owner=self.request.user)
 
 
-class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):
+class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet[UserProfile]):
     """
     ViewSet for the UserProfile model.
     """
