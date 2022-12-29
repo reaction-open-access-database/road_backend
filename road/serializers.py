@@ -16,7 +16,7 @@ from .models import Molecule, Reaction, ReactionComponent, UserProfile
 from .exceptions import InvalidMolecule
 
 
-class RDKitMoleculeJSONField(serializers.Field):
+class RDKitMoleculeJSONField(serializers.Field[Any, str, Any, Any]):
     """
     A field that serializes and deserializes RDKit molecules to and from JSON.
     """
@@ -49,7 +49,7 @@ class RDKitMoleculeJSONField(serializers.Field):
         return {"json": mols[0]}
 
 
-class RDKitMoleculeSmilesField(serializers.Field):
+class RDKitMoleculeSmilesField(serializers.Field[Any, str, str, Any]):
     """
     A field that serializes and deserializes RDKit molecules to and from SMILES.
     """
@@ -69,7 +69,7 @@ class RDKitMoleculeSmilesField(serializers.Field):
             raise InvalidMolecule("Invalid SMILES data") from exc
 
 
-class RDKitMoleculeInchiField(serializers.Field):
+class RDKitMoleculeInchiField(serializers.Field[Any, str, str, Any]):
     """
     A field that serializes and deserializes RDKit molecules to and from InChI strings.
     """
