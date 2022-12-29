@@ -42,7 +42,7 @@ class HideUnauthorised:  # pylint: disable=too-few-public-methods
 
 
 class MoleculeViewSet(
-    viewsets.ModelViewSet[Molecule]
+    viewsets.ModelViewSet[Molecule]  # pylint: disable=unsubscriptable-object
 ):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Molecule model.
@@ -58,7 +58,7 @@ class MoleculeViewSet(
 
 
 class ReactionViewSet(
-    viewsets.ModelViewSet[Reaction]
+    viewsets.ModelViewSet[Reaction]  # pylint: disable=unsubscriptable-object
 ):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Reaction model.
@@ -74,7 +74,7 @@ class ReactionViewSet(
 
 
 class ReactionComponentViewSet(
-    viewsets.ModelViewSet[ReactionComponent]
+    viewsets.ModelViewSet[ReactionComponent]  # pylint: disable=unsubscriptable-object
 ):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the ReactionComponent model.
@@ -89,7 +89,12 @@ class ReactionComponentViewSet(
         serializer.save(owner=self.request.user)
 
 
-class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet[UserProfile]):
+class UserViewSet(
+    HideUnauthorised,
+    viewsets.ReadOnlyModelViewSet[
+        UserProfile
+    ],  # pylint: disable=unsubscriptable-object
+):
     """
     ViewSet for the UserProfile model.
     """
