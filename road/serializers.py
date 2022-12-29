@@ -3,26 +3,29 @@ The serializers for the ROAD REST API.
 """
 
 import json
+from typing import Any, Dict, Optional
 
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from rdkit import Chem
+from rdkit.Chem.rdMolDescriptors import CalcMolFormula, CalcExactMolWt
 from rdkit.Chem.Draw import rdMolDraw2D
+from rdkit.Chem.AllChem import Mol
 from rest_framework import serializers
 
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
 from .exceptions import InvalidMolecule
 
 
-class RDKitMoleculeJSONField(serializers.Field):
+class RDKitMoleculeJSONField(serializers.Field[Any, str, Any, Any]):
     """
     A field that serializes and deserializes RDKit molecules to and from JSON.
     """
 
-    def to_representation(self, value):
-        """Convert the RDKit molecule to JSON."""
+    def to_representation(self, value: Molecule) -> Any:
+        """Convert the Molecule to JSON."""
         return json.loads(Chem.MolToJSON(value.molecule))
 
-    def to_internal_value(self, data):
+    def to_internal_value(self, data: str) -> Dict[str, Optional[Mol]]:
         """Convert the JSON to an RDKit molecule."""
         if data == "":
             return {"json": None}
@@ -46,16 +49,16 @@ class RDKitMoleculeJSONField(serializers.Field):
         return {"json": mols[0]}
 
 
-class RDKitMoleculeSmilesField(serializers.Field):
+class RDKitMoleculeSmilesField(serializers.Field[Any, str, str, Any]):
     """
     A field that serializes and deserializes RDKit molecules to and from SMILES.
     """
 
-    def to_representation(self, value):
+    def to_representation(self, value: Molecule) -> str:
         """Convert the RDKit molecule to SMILES."""
         return Chem.MolToSmiles(value.molecule)
 
-    def to_internal_value(self, data):
+    def to_internal_value(self, data: str) -> Dict[str, Optional[Mol]]:
         """Convert the SMILES to an RDKit molecule."""
         if data == "":
             return {"smiles": None}
@@ -66,16 +69,16 @@ class RDKitMoleculeSmilesField(serializers.Field):
             raise InvalidMolecule("Invalid SMILES data") from exc
 
 
-class RDKitMoleculeInchiField(serializers.Field):
+class RDKitMoleculeInchiField(serializers.Field[Any, str, str, Any]):
     """
     A field that serializes and deserializes RDKit molecules to and from InChI strings.
     """
 
-    def to_representation(self, value):
+    def to_representation(self, value: Molecule) -> str:
         """Convert the RDKit molecule to an InChI string."""
         return Chem.MolToInchi(value.molecule)
 
-    def to_internal_value(self, data):
+    def to_internal_value(self, data: str) -> Dict[str, Optional[Mol]]:
         """Convert an InChI string to an RDKit molecule."""
         if data == "":
             return {"inchi": None}
@@ -115,7 +118,7 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
             "id",
         ]
 
-    def validate(self, attrs):
+    def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
         attrs.setdefault("json", None)
         attrs.setdefault("smiles", None)
         attrs.setdefault("inchi", None)
@@ -137,20 +140,20 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
 
         return attrs
 
-    def get_svg(self, obj):
+    def get_svg(self, obj: Molecule) -> str:
         """Return the text of an SVG image of the molecule."""
         drawer = rdMolDraw2D.MolDraw2DSVG(200, 200)
         drawer.DrawMolecule(obj.molecule)
         drawer.FinishDrawing()
         return drawer.GetDrawingText().replace("svg:", "")
 
-    def get_mw(self, obj):
+    def get_mw(self, obj: Molecule) -> float:
         """Return the molecular weight of the molecule."""
-        return Chem.rdMolDescriptors.CalcExactMolWt(obj.molecule)
+        return CalcExactMolWt(obj.molecule)
 
-    def get_formula(self, obj):
+    def get_formula(self, obj: Molecule) -> str:
         """Return the molecular formula of the molecule."""
-        return Chem.rdMolDescriptors.CalcMolFormula(obj.molecule)
+        return CalcMolFormula(obj.molecule)
 
 
 class ReactionSerializer(serializers.HyperlinkedModelSerializer):
