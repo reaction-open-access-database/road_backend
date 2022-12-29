@@ -24,6 +24,7 @@ jobs:
       run: black --diff --check $(git ls-files '*.py')
     - name: Checking code with pylint
       env:
+        DJANGO_SETTINGS_MODULE: settings.test
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         DB_NAME: ${{ secrets.DB_NAME }}
         DB_USER: ${{ secrets.DB_USER }}
