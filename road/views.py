@@ -7,6 +7,8 @@ from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
+from rest_framework.request import Request
+from rest_framework.serializers import BaseSerializer
 from query_parser import (  # pylint: disable=import-error, no-name-in-module
     build_molecule_query,
     QueryParserError,
@@ -33,7 +35,9 @@ class HideUnauthorised:  # pylint: disable=too-few-public-methods
         raise NotFound()
 
 
-class MoleculeViewSet(viewsets.ModelViewSet[Molecule]):
+class MoleculeViewSet(
+    viewsets.ModelViewSet[Molecule]
+):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Molecule model.
     """
@@ -42,11 +46,14 @@ class MoleculeViewSet(viewsets.ModelViewSet[Molecule]):
     serializer_class = MoleculeSerializer
     permission_classes = [IsSuperUser | IsOwner | ReadOnly]
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer: BaseSerializer[Molecule]) -> None:
+        """Create a new Molecule, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
-class ReactionViewSet(viewsets.ModelViewSet[Reaction]):
+class ReactionViewSet(
+    viewsets.ModelViewSet[Reaction]
+):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Reaction model.
     """
@@ -55,7 +62,8 @@ class ReactionViewSet(viewsets.ModelViewSet[Reaction]):
     serializer_class = ReactionSerializer
     permission_classes = [IsSuperUser | ReadOnly]
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer: BaseSerializer[Reaction]) -> None:
+        """Create a new Reaction, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
@@ -70,7 +78,8 @@ class ReactionComponentViewSet(
     serializer_class = ReactionComponentSerializer
     permission_classes = [IsSuperUser | ReadOnly]
 
-    def perform_create(self, serializer):
+    def perform_create(self, serializer: BaseSerializer[ReactionComponent]) -> None:
+        """Create a new ReactionComponent, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
