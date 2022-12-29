@@ -59,7 +59,9 @@ class ReactionViewSet(viewsets.ModelViewSet[Reaction]):
         serializer.save(owner=self.request.user)
 
 
-class ReactionComponentViewSet(viewsets.ModelViewSet[ReactionComponent]):
+class ReactionComponentViewSet(
+    viewsets.ModelViewSet[ReactionComponent]
+):  # pylint: disable=too-few-public-methods
     """
     ViewSet for the ReactionComponent model.
     """

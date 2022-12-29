@@ -2,6 +2,8 @@
 The models for ROAD.
 """
 
+from typing import Optional, Iterable
+
 from django_rdkit import models
 from rdkit import Chem
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
@@ -21,11 +23,17 @@ class Molecule(models.Model):
     owner = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="molecules")
     molecular_formula = models.CharField(max_length=256)
 
-    def save(self, *args, **kwargs):
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Optional[str] = None,
+        update_fields: Optional[Iterable[str]] = None,
+    ) -> None:
         """Save the molecule."""
         Chem.SanitizeMol(self.molecule)
         self.molecular_formula = Chem.rdMolDescriptors.CalcMolFormula(self.molecule)
-        super().save(*args, **kwargs)
+        super().save(force_insert, force_update, using, update_fields)
 
     def get_inchi(self) -> str:
         """Return the InChI representation of the molecule."""
@@ -110,8 +118,8 @@ class UserProfile(models.Model):
 # Automatically create UserProfile when a User is created
 @receiver(post_save, sender=User)
 def create_user_profile(
-    sender, instance, created, **kwargs
-) -> None:  # pylint: disable=unused-argument
+    sender, instance, created, **kwargs  # pylint: disable=unused-argument
+) -> None:
     """Create a UserProfile when a User is created."""
     if created:
         UserProfile.objects.create(owner=instance)

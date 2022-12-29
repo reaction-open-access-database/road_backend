@@ -6,26 +6,25 @@ from typing import Optional
 
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.db import transaction
-from rdkit.Chem import AllChem
+from django.db.models import QuerySet
+from rdkit.Chem.AllChem import Mol, ChemicalReaction
 
 from .models import Molecule, Reaction, ReactionComponent
 
 
 def get_reactions_for_molecule(
-    molecule, component_type: Optional[ReactionComponent.ComponentType] = None
-):
+    molecule: Mol, component_type: Optional[ReactionComponent.ComponentType] = None
+) -> QuerySet[Molecule]:
     """
     Returns the reactions associated with a particular molecule.
+    Will raise a Molecule.DoesNotExist exception if the molecule does not exist in the database.
 
     :param molecule: The molecule to check
     :param component_type: The reaction component type the molecule should be
     (reactant, product or agent), or None (default) to permit any component type
     :return: A list of the associated reactions
     """
-    try:
-        molecule = Molecule.objects.get(molecule=molecule)
-    except Molecule.DoesNotExist:
-        return []
+    molecule = Molecule.objects.get(molecule=molecule)
 
     if component_type is None:
         return Reaction.objects.filter(components__molecule=molecule)
@@ -36,7 +35,7 @@ def get_reactions_for_molecule(
 
 
 @transaction.atomic
-def reaction_create(rdkit_reaction: AllChem.ChemicalReaction, owner: User) -> Reaction:
+def reaction_create(rdkit_reaction: ChemicalReaction, owner: User) -> Reaction:
     """
     Creates a reaction from an RDKit reaction, with the specified owner.
     Returns the created reaction.
@@ -82,7 +81,7 @@ def reaction_component_create(
     )
 
 
-def molecule_get_or_create(rdkit_molecule, owner: User) -> Molecule:
+def molecule_get_or_create(rdkit_molecule: Mol, owner: User) -> Molecule:
     """
     Creates a molecule if it does not already exist.
     Returns the molecule model.
