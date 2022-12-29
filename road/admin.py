@@ -14,7 +14,7 @@ admin.site.register(ReactionSource)
 
 
 @admin.register(Molecule)
-class MoleculeAdmin(admin.ModelAdmin):
+class MoleculeAdmin(admin.ModelAdmin[Molecule]):
     """
     Custom admin interface for the Molecule model.
     Displays the molecule name and molecular formula.

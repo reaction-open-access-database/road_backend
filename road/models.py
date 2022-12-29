@@ -85,6 +85,10 @@ class ReactionComponent(models.Model):
         User, on_delete=models.RESTRICT, related_name="components"
     )
 
+    def get_component_type(self) -> str:
+        """Return the component type (reactant, product or agent) as a string."""
+        return self.ComponentType[self.component_type]
+
 
 class ReactionSource(models.Model):
     """
@@ -108,7 +112,7 @@ class UserProfile(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
 
     def __str__(self) -> str:
-        return self.owner.username  # type: ignore[no-any-return]
+        return self.owner.username
 
 
 # Automatically create UserProfile when a User is created

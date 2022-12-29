@@ -14,7 +14,7 @@ from .models import Molecule, Reaction, ReactionComponent
 
 def get_reactions_for_molecule(
     molecule: Mol, component_type: Optional[ReactionComponent.ComponentType] = None
-) -> QuerySet[Molecule]:
+) -> QuerySet[Reaction]:
     """
     Returns the reactions associated with a particular molecule.
     Will raise a Molecule.DoesNotExist exception if the molecule does not exist in the database.
@@ -27,9 +27,9 @@ def get_reactions_for_molecule(
     molecule = Molecule.objects.get(molecule=molecule)
 
     if component_type is None:
-        return Reaction.objects.filter(components__molecule=molecule)  # type: ignore[no-any-return]
+        return Reaction.objects.filter(components__molecule=molecule)
 
-    return Reaction.objects.filter(  # type: ignore[no-any-return]
+    return Reaction.objects.filter(
         components__molecule=molecule, components__component_type=component_type
     )
 
@@ -63,7 +63,7 @@ def reaction_create(rdkit_reaction: ChemicalReaction, owner: User) -> Reaction:
 
 def reaction_component_create(
     reaction: Reaction,
-    molecule,
+    rdkit_molecule: Mol,
     component_type: ReactionComponent.ComponentType,
     owner: User,
 ) -> ReactionComponent:
@@ -72,10 +72,10 @@ def reaction_component_create(
     Creates the molecule if it does not already exist.
     Returns the created reaction component.
     """
-    molecule = molecule_get_or_create(molecule, owner)
-    return ReactionComponent.objects.create(  # type: ignore[no-any-return]
+    rdkit_molecule = molecule_get_or_create(rdkit_molecule, owner)
+    return ReactionComponent.objects.create(
         reaction=reaction,
-        molecule=molecule,
+        molecule=rdkit_molecule,
         component_type=component_type,
         owner=owner,
     )
@@ -90,4 +90,4 @@ def molecule_get_or_create(rdkit_molecule: Mol, owner: User) -> Molecule:
         molecule = Molecule.objects.get(molecule=rdkit_molecule)
     except Molecule.DoesNotExist:
         molecule = Molecule.objects.create(molecule=rdkit_molecule, owner=owner)
-    return molecule  # type: ignore[no-any-return]
+    return molecule
