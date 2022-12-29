@@ -31,7 +31,9 @@ from .serializers import (
 class HideUnauthorised:  # pylint: disable=too-few-public-methods
     """Override the default permission_denied method to return a 404 instead of a 403."""
 
-    def permission_denied(self, request: Request, message: str | None = None, code: str | None = None) -> NoReturn:
+    def permission_denied(
+        self, request: Request, message: str | None = None, code: str | None = None
+    ) -> NoReturn:
         """
         Instead of returning a 403, return a 404, to conceal the existence of the resource.
         """
@@ -95,8 +97,10 @@ class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet[UserProfile]):
     serializer_class = UserProfileSerializer
 
     def get_permissions(self) -> List[Any]:
-        # Allow users to view and edit their own profiles,
-        # but only superusers to view and edit all profiles
+        """
+        Allow users to view and edit their own profiles,
+        but only superusers to view and edit all profiles.
+        """
         if self.action == "retrieve":
             self.permission_classes = [IsOwner | IsSuperUser]
         elif self.action == "list":
