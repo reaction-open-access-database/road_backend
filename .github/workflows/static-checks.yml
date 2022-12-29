@@ -34,3 +34,5 @@ jobs:
       run: PYTHONPATH=$PYTHONPATH:$PWD pylint $(git ls-files '*.py')
     - name: Checking code with mypy
       run: mypy --strict $(git ls-files '*.py')
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
