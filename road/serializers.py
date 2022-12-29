@@ -16,7 +16,9 @@ from .models import Molecule, Reaction, ReactionComponent, UserProfile
 from .exceptions import InvalidMolecule
 
 
-class RDKitMoleculeJSONField(serializers.Field[Any, str, Any, Any]):
+class RDKitMoleculeJSONField(
+    serializers.Field[Any, str, Any, Any]  # pylint: disable=unsubscriptable-object
+):
     """
     A field that serializes and deserializes RDKit molecules to and from JSON.
     """
@@ -49,7 +51,9 @@ class RDKitMoleculeJSONField(serializers.Field[Any, str, Any, Any]):
         return {"json": mols[0]}
 
 
-class RDKitMoleculeSmilesField(serializers.Field[Any, str, str, Any]):
+class RDKitMoleculeSmilesField(
+    serializers.Field[Any, str, str, Any]  # pylint: disable=unsubscriptable-object
+):
     """
     A field that serializes and deserializes RDKit molecules to and from SMILES.
     """
@@ -69,7 +73,9 @@ class RDKitMoleculeSmilesField(serializers.Field[Any, str, str, Any]):
             raise InvalidMolecule("Invalid SMILES data") from exc
 
 
-class RDKitMoleculeInchiField(serializers.Field[Any, str, str, Any]):
+class RDKitMoleculeInchiField(
+    serializers.Field[Any, str, str, Any]  # pylint: disable=unsubscriptable-object
+):
     """
     A field that serializes and deserializes RDKit molecules to and from InChI strings.
     """
