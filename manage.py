@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def main():
+def main() -> None:
     """Run administrative tasks."""
     if os.getenv("DJANGO_SETTINGS_MODULE") is None:
         raise RuntimeError("DJANGO_SETTINGS_MODULE environment variable is not set.")

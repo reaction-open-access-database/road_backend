@@ -26,7 +26,7 @@ class MoleculeTest(APITestCase):
         self._user = User.objects.create_user("test")
         self.client.force_authenticate(user=self._user)
 
-    def test_simple_smiles_molecules(self):
+    def test_simple_smiles_molecules(self) -> None:
         """Test that simple SMILES molecules are correctly parsed and stored."""
         molecules = (
             "C",
@@ -42,7 +42,7 @@ class MoleculeTest(APITestCase):
         for molecule in molecules:
             self.assertEqual(1, Molecule.objects.filter(molecule=molecule).count())
 
-    def test_chiral_molecules(self):
+    def test_chiral_molecules(self) -> None:
         """Test that chiral molecules are correctly parsed and stored."""
         config.do_chiral_sss = True
         molecules = (
@@ -64,7 +64,7 @@ class MoleculeTest(APITestCase):
         for molecule in molecules:
             self.assertEqual(1, Molecule.objects.filter(molecule=molecule).count())
 
-    def test_create_molecule_smiles(self):
+    def test_create_molecule_smiles(self) -> None:
         """Test that a molecule can be created from a SMILES string through the REST API."""
         smiles = "O=O"
         name = "oxygen"
@@ -78,7 +78,7 @@ class MoleculeTest(APITestCase):
         self.assertEqual(Molecule.objects.get().name, "oxygen")
         self.assertEqual(Molecule.objects.get().owner, self._user)
 
-    def test_create_molecule_inchi(self):
+    def test_create_molecule_inchi(self) -> None:
         """Test that a molecule can be created from an InChI string through the REST API."""
         inchi = "InChI=1S/C3H7NO2/c1-2(4)3(5)6/h2H,4H2,1H3,(H,5,6)/t2-/m0/s1"
         name = "l-alanine"
@@ -92,7 +92,7 @@ class MoleculeTest(APITestCase):
         self.assertEqual(Molecule.objects.get().name, "l-alanine")
         self.assertEqual(Molecule.objects.get().owner, self._user)
 
-    def test_create_molecule_json(self):
+    def test_create_molecule_json(self) -> None:
         """Test that a molecule can be created from a JSON string through the REST API."""
         molecule = AllChem.MolFromSmiles("C=C-C")
         json = AllChem.MolToJSON(molecule)
@@ -110,7 +110,7 @@ class MoleculeTest(APITestCase):
         self.assertEqual(Molecule.objects.get().name, "propene")
         self.assertEqual(Molecule.objects.get().owner, self._user)
 
-    def test_create_molecule_nothing(self):
+    def test_create_molecule_nothing(self) -> None:
         """Test that a molecule cannot be created without any data through the REST API."""
         name = "nothing"
         response = self.client.post(
@@ -144,7 +144,7 @@ class ReactionTest(APITestCase):
     # def test_applying_reaction(self):
     #     pass
 
-    def test_find_reactions(self):
+    def test_find_reactions(self) -> None:
         """Test finding reactions that contain a molecule."""
         sample_reactions = (
             AllChem.ReactionFromSmarts("CCl>[OH-]>CO"),

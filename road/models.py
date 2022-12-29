@@ -27,11 +27,11 @@ class Molecule(models.Model):
         self.molecular_formula = Chem.rdMolDescriptors.CalcMolFormula(self.molecule)
         super().save(*args, **kwargs)
 
-    def get_inchi(self):
+    def get_inchi(self) -> str:
         """Return the InChI representation of the molecule."""
         return Chem.MolToInchi(self.molecule)
 
-    def get_smiles(self):
+    def get_smiles(self) -> str:
         """Return the SMILES representation of the molecule."""
         return Chem.MolToSmiles(self.molecule)
 
@@ -77,7 +77,7 @@ class ReactionComponent(models.Model):
         User, on_delete=models.RESTRICT, related_name="components"
     )
 
-    def get_component_type(self):
+    def get_component_type(self) -> str:
         """Return the component type (reactant, product or agent) as a string."""
         return self.ComponentType[self.component_type]
 
@@ -103,7 +103,7 @@ class UserProfile(models.Model):
 
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.owner.username
 
 
@@ -111,7 +111,7 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(
     sender, instance, created, **kwargs
-):  # pylint: disable=unused-argument
+) -> None:  # pylint: disable=unused-argument
     """Create a UserProfile when a User is created."""
     if created:
         UserProfile.objects.create(owner=instance)

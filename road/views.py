@@ -33,7 +33,7 @@ class HideUnauthorised:  # pylint: disable=too-few-public-methods
         raise NotFound()
 
 
-class MoleculeViewSet(viewsets.ModelViewSet):
+class MoleculeViewSet(viewsets.ModelViewSet[Molecule]):
     """
     ViewSet for the Molecule model.
     """
@@ -46,7 +46,7 @@ class MoleculeViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
-class ReactionViewSet(viewsets.ModelViewSet):
+class ReactionViewSet(viewsets.ModelViewSet[Reaction]):
     """
     ViewSet for the Reaction model.
     """
@@ -59,7 +59,7 @@ class ReactionViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
-class ReactionComponentViewSet(viewsets.ModelViewSet):
+class ReactionComponentViewSet(viewsets.ModelViewSet[ReactionComponent]):
     """
     ViewSet for the ReactionComponent model.
     """
@@ -72,7 +72,7 @@ class ReactionComponentViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
-class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):
+class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet[UserProfile]):
     """
     ViewSet for the UserProfile model.
     """
@@ -95,7 +95,7 @@ class QueryView(ListAPIView):
     A view for querying the database.
     """
 
-    def _get_query(self):
+    def _get_query(self) -> str:
         """
         Ensure that the query parameter is provided.
         Returns the query parameter if present, otherwise raises ParameterNotProvided.
@@ -121,6 +121,6 @@ class MoleculeQueryView(QueryView):
         try:
             parsed_query = build_molecule_query(query, Q)
         except QueryParserError as error:
-            raise InvalidQuery(error) from error
+            raise InvalidQuery from error
 
         return Molecule.objects.filter(parsed_query)
