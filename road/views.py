@@ -95,6 +95,7 @@ class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet[UserProfile]):
 
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
+    permission_classes = [IsSuperUser]
 
     def get_permissions(self) -> List[Any]:
         """
