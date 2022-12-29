@@ -27,9 +27,9 @@ def get_reactions_for_molecule(
     molecule = Molecule.objects.get(molecule=molecule)
 
     if component_type is None:
-        return Reaction.objects.filter(components__molecule=molecule)
+        return Reaction.objects.filter(components__molecule=molecule)  # type: ignore[no-any-return]
 
-    return Reaction.objects.filter(
+    return Reaction.objects.filter(  # type: ignore[no-any-return]
         components__molecule=molecule, components__component_type=component_type
     )
 
@@ -73,7 +73,7 @@ def reaction_component_create(
     Returns the created reaction component.
     """
     molecule = molecule_get_or_create(molecule, owner)
-    return ReactionComponent.objects.create(
+    return ReactionComponent.objects.create(  # type: ignore[no-any-return]
         reaction=reaction,
         molecule=molecule,
         component_type=component_type,
@@ -90,4 +90,4 @@ def molecule_get_or_create(rdkit_molecule: Mol, owner: User) -> Molecule:
         molecule = Molecule.objects.get(molecule=rdkit_molecule)
     except Molecule.DoesNotExist:
         molecule = Molecule.objects.create(molecule=rdkit_molecule, owner=owner)
-    return molecule
+    return molecule  # type: ignore[no-any-return]

@@ -108,7 +108,7 @@ class UserProfile(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
 
     def __str__(self) -> str:
-        return self.owner.username
+        return self.owner.username  # type: ignore[no-any-return]
 
 
 # Automatically create UserProfile when a User is created
