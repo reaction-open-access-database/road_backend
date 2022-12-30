@@ -1,9 +1,9 @@
-name: Pylint
+name: Python Checks
 
 on: [push]
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     strategy:
       matrix:
