@@ -22,9 +22,7 @@ from .exceptions import InvalidMolecule
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
 
 
-class RDKitMoleculeJSONField(
-    Field[Any, str, Any, Any]  # pylint: disable=unsubscriptable-object
-):
+class RDKitMoleculeJSONField(Field):  # type: ignore
     """
     A field that serializes and deserializes RDKit molecules to and from JSON.
     """
@@ -57,9 +55,7 @@ class RDKitMoleculeJSONField(
         return {"json": mols[0]}
 
 
-class RDKitMoleculeSmilesField(
-    Field[Any, str, str, Any]  # pylint: disable=unsubscriptable-object
-):
+class RDKitMoleculeSmilesField(Field):  # type: ignore
     """
     A field that serializes and deserializes RDKit molecules to and from SMILES.
     """
@@ -79,9 +75,7 @@ class RDKitMoleculeSmilesField(
             raise InvalidMolecule("Invalid SMILES data") from exc
 
 
-class RDKitMoleculeInchiField(
-    Field[Any, str, str, Any]  # pylint: disable=unsubscriptable-object
-):
+class RDKitMoleculeInchiField(Field):  # type: ignore
     """
     A field that serializes and deserializes RDKit molecules to and from InChI strings.
     """
@@ -174,9 +168,7 @@ class ReactionSerializer(HyperlinkedModelSerializer):
     Displays the components of the reaction.
     """
 
-    components: HyperlinkedRelatedField[  # pylint: disable=unsubscriptable-object
-        ReactionComponent
-    ] = HyperlinkedRelatedField(
+    components: HyperlinkedRelatedField = HyperlinkedRelatedField(  # type: ignore
         many=True, read_only=True, view_name="reactioncomponent-detail"
     )
 
@@ -216,9 +208,9 @@ class UserSerializer(HyperlinkedModelSerializer):
     Displays the user's profile.
     """
 
-    profile: HyperlinkedRelatedField[  # pylint: disable=unsubscriptable-object
-        UserProfile
-    ] = HyperlinkedRelatedField(read_only=True, view_name="userprofile-detail")
+    profile: HyperlinkedRelatedField = HyperlinkedRelatedField(  # type: ignore
+        read_only=True, view_name="userprofile-detail"
+    )
 
     class Meta:
         model = User
