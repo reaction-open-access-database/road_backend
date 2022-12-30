@@ -2,7 +2,7 @@
 The models for ROAD.
 """
 
-from typing import Optional, Iterable
+from typing import Any, Optional, Iterable
 
 from django_rdkit import models
 from rdkit import Chem
@@ -118,7 +118,9 @@ class UserProfile(models.Model):
 # Automatically create UserProfile when a User is created
 @receiver(post_save, sender=User)
 def create_user_profile(
-    sender, instance, created, **kwargs  # pylint: disable=unused-argument
+    instance: User,
+    created: bool,
+    **kwargs: Any,
 ) -> None:
     """Create a UserProfile when a User is created."""
     if created:
