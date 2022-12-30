@@ -174,7 +174,9 @@ class ReactionSerializer(HyperlinkedModelSerializer):
     Displays the components of the reaction.
     """
 
-    components: HyperlinkedRelatedField[ReactionComponent] = HyperlinkedRelatedField(
+    components: HyperlinkedRelatedField[  # pylint: disable=unsubscriptable-object
+        ReactionComponent
+    ] = HyperlinkedRelatedField(
         many=True, read_only=True, view_name="reactioncomponent-detail"
     )
 
@@ -214,9 +216,9 @@ class UserSerializer(HyperlinkedModelSerializer):
     Displays the user's profile.
     """
 
-    profile: HyperlinkedRelatedField[UserProfile] = HyperlinkedRelatedField(
-        read_only=True, view_name="userprofile-detail"
-    )
+    profile: HyperlinkedRelatedField[  # pylint: disable=unsubscriptable-object
+        UserProfile
+    ] = HyperlinkedRelatedField(read_only=True, view_name="userprofile-detail")
 
     class Meta:
         model = User

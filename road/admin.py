@@ -14,7 +14,9 @@ admin.site.register(ReactionSource)
 
 
 @admin.register(Molecule)
-class MoleculeAdmin(admin.ModelAdmin[Molecule]):
+class MoleculeAdmin(
+    admin.ModelAdmin[Molecule]
+):  # pylint: disable=unsubscriptable-object, too-few-public-methods
     """
     Custom admin interface for the Molecule model.
     Displays the molecule name and molecular formula.
