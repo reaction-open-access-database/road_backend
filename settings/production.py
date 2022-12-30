@@ -1,10 +1,14 @@
+"""
+Settings for the production environment
+"""
+
 # Base settings
-from .base import *
+from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import
 
 # Production settings
 DEBUG = False
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # SSL
 CSRF_COOKIE_SECURE = True

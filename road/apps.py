@@ -1,6 +1,11 @@
+"""
+The application configuration for ROAD.
+"""
 from django.apps import AppConfig
 
 
 class RoadConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'road'
+    """The application configuration for ROAD."""
+
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "road"
