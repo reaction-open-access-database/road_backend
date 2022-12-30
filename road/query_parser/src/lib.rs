@@ -16,7 +16,7 @@ fn build_molecule_query<'a>(input: &'a str, q: &'a PyAny) -> PyResult<&'a PyAny>
 }
 
 #[pyfunction]
-fn generate_example_json() -> PyResult<String> {
+fn generate_example_json() -> String {
     let mut atom_hashmap = HashMap::new();
     atom_hashmap.insert(SerializableElement(Element::Carbon), 1);
     atom_hashmap.insert(SerializableElement(Element::Hydrogen), 4);
@@ -56,7 +56,7 @@ fn generate_example_json() -> PyResult<String> {
             ],
         },
     };
-    Ok(serde_json::to_string(&query).unwrap())
+    serde_json::to_string(&query).unwrap()
 }
 
 #[pymodule]

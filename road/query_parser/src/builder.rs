@@ -99,8 +99,7 @@ fn create_molecular_formula(atoms: HashMap<Element, u32>) -> String {
                 format!("{}{}", element.get_symbol(), count)
             }
         })
-        .collect::<Vec<String>>()
-        .join("")
+        .collect::<String>()
 }
 
 fn create_q<'a, T>(key: &'a str, value: T, q: &'a Q) -> PyResult<&'a Q>
