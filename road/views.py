@@ -42,9 +42,7 @@ class HideUnauthorised:  # pylint: disable=too-few-public-methods
         raise NotFound()
 
 
-class MoleculeViewSet(
-    viewsets.ModelViewSet[Molecule]  # pylint: disable=unsubscriptable-object
-):  # pylint: disable=too-few-public-methods
+class MoleculeViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Molecule model.
     """
@@ -58,9 +56,7 @@ class MoleculeViewSet(
         serializer.save(owner=self.request.user)
 
 
-class ReactionViewSet(
-    viewsets.ModelViewSet[Reaction]  # pylint: disable=unsubscriptable-object
-):  # pylint: disable=too-few-public-methods
+class ReactionViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Reaction model.
     """
@@ -74,9 +70,7 @@ class ReactionViewSet(
         serializer.save(owner=self.request.user)
 
 
-class ReactionComponentViewSet(
-    viewsets.ModelViewSet[ReactionComponent]  # pylint: disable=unsubscriptable-object
-):  # pylint: disable=too-few-public-methods
+class ReactionComponentViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the ReactionComponent model.
     """
@@ -90,12 +84,7 @@ class ReactionComponentViewSet(
         serializer.save(owner=self.request.user)
 
 
-class UserViewSet(
-    HideUnauthorised,
-    viewsets.ReadOnlyModelViewSet[  # pylint: disable=unsubscriptable-object
-        UserProfile
-    ],
-):
+class UserProfileViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):  # type: ignore
     """
     ViewSet for the UserProfile model.
     """
@@ -111,7 +100,7 @@ class UserViewSet(
         """
         if self.action == "retrieve":
             self.permission_classes = [IsOwner | IsSuperUser]
-        elif self.action == "list":
+        else:
             self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 
