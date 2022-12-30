@@ -91,6 +91,6 @@ impl Serialize for SerializableElement {
     where
         S: Serializer,
     {
-        serializer.serialize_str(&self.0.get_symbol())
+        serializer.serialize_str(self.0.get_symbol())
     }
 }
