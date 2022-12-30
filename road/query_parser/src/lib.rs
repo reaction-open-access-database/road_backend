@@ -1,10 +1,10 @@
-mod types;
 mod builder;
+mod types;
 
-use std::collections::HashMap;
-use pyo3::prelude::*;
 use crate::types::{QueryParserError, SerializableElement};
 use periodic_table_on_an_enum::Element;
+use pyo3::prelude::*;
+use std::collections::HashMap;
 
 #[pyfunction]
 fn build_molecule_query<'a>(input: &'a str, q: &'a PyAny) -> PyResult<&'a PyAny> {
@@ -27,28 +27,32 @@ fn generate_example_json() -> PyResult<String> {
                 types::Query::Quantity {
                     query: types::Quantity::Structure {
                         op: types::StructureOp::Equal,
-                        value: types::Molecule::Smiles { value: "C".to_string() },
+                        value: types::Molecule::Smiles {
+                            value: "C".to_string(),
+                        },
                     },
                 },
                 types::Query::Quantity {
                     query: types::Quantity::Structure {
                         op: types::StructureOp::HasSubstruct,
-                        value: types::Molecule::Smiles { value: "C".to_string() },
+                        value: types::Molecule::Smiles {
+                            value: "C".to_string(),
+                        },
                     },
                 },
                 types::Query::Quantity {
                     query: types::Quantity::MolecularWeight {
                         molecular_weight: types::MolecularWeight::Equal {
                             value: 0.0,
-                            tolerance: 0.0
+                            tolerance: 0.0,
                         },
                     },
                 },
                 types::Query::Quantity {
                     query: types::Quantity::MolecularFormula {
                         atoms: atom_hashmap,
-                    }
-                }
+                    },
+                },
             ],
         },
     };

@@ -1,24 +1,22 @@
-use pyo3::{create_exception, PyAny};
-use serde::{Serialize, Deserialize, Serializer, de};
-use std::collections::HashMap;
 use periodic_table_on_an_enum::Element;
+use pyo3::{create_exception, PyAny};
+use serde::{de, Deserialize, Serialize, Serializer};
+use std::collections::HashMap;
 
-create_exception!(query_parser, QueryParserError, pyo3::exceptions::PyException);
+create_exception!(
+    query_parser,
+    QueryParserError,
+    pyo3::exceptions::PyException
+);
 
 pub type Q = PyAny;
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "lowercase", tag = "type")]
 pub enum Modifier {
-    And {
-        queries: Vec<Query>,
-    },
-    Or {
-        queries: Vec<Query>,
-    },
-    Not {
-        query: Box<Query>,
-    },
+    And { queries: Vec<Query> },
+    Or { queries: Vec<Query> },
+    Not { query: Box<Query> },
 }
 
 #[derive(Serialize, Deserialize)]
@@ -32,22 +30,11 @@ pub enum StructureOp {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "lowercase", tag = "type")]
 pub enum MolecularWeight {
-    Equal {
-        value: f64,
-        tolerance: f64,
-    },
-    GreaterThan {
-        value: f64,
-    },
-    GreaterThanOrEqual {
-        value: f64,
-    },
-    LessThan {
-        value: f64,
-    },
-    LessThanOrEqual {
-        value: f64,
-    },
+    Equal { value: f64, tolerance: f64 },
+    GreaterThan { value: f64 },
+    GreaterThanOrEqual { value: f64 },
+    LessThan { value: f64 },
+    LessThanOrEqual { value: f64 },
 }
 
 #[derive(Serialize, Deserialize)]
@@ -56,7 +43,7 @@ pub enum Quantity {
     // Operator enum, value
     Structure {
         op: StructureOp,
-        value: Molecule
+        value: Molecule,
     },
     MolecularWeight {
         molecular_weight: MolecularWeight,
@@ -69,20 +56,14 @@ pub enum Quantity {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "lowercase", tag = "type")]
 pub enum Query {
-    Modifier {
-        query: Modifier,
-    },
-    Quantity {
-        query: Quantity,
-    },
+    Modifier { query: Modifier },
+    Quantity { query: Quantity },
 }
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "lowercase", tag = "type")]
 pub enum Molecule {
-    Smiles {
-        value: String,
-    },
+    Smiles { value: String },
 }
 
 #[derive(Hash, Eq, PartialEq)]
