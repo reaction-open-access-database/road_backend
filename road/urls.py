@@ -19,14 +19,14 @@ from .views import (
     MoleculeViewSet,
     ReactionComponentViewSet,
     ReactionViewSet,
-    UserViewSet,
+    UserProfileViewSet,
 )
 
 router = routers.DefaultRouter()
 router.register("molecules", MoleculeViewSet)
 router.register("reactions", ReactionViewSet)
 router.register("reaction-components", ReactionComponentViewSet)
-router.register("user-profiles", UserViewSet)
+router.register("user-profiles", UserProfileViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

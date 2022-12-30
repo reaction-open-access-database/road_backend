@@ -84,7 +84,7 @@ class ReactionComponentViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint
         serializer.save(owner=self.request.user)
 
 
-class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):  # type: ignore
+class UserProfileViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):  # type: ignore
     """
     ViewSet for the UserProfile model.
     """
@@ -100,7 +100,7 @@ class UserViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):  # type: ign
         """
         if self.action == "retrieve":
             self.permission_classes = [IsOwner | IsSuperUser]
-        elif self.action == "list":
+        else:
             self.permission_classes = [IsSuperUser]
         return super().get_permissions()
 

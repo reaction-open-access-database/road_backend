@@ -194,8 +194,8 @@ class UserProfileSerializer(HyperlinkedModelSerializer):
     Displays the user's username and email address.
     """
 
-    username = ReadOnlyField(source="user.username")
-    email = ReadOnlyField(source="user.email")
+    username = ReadOnlyField(source="owner.username")
+    email = ReadOnlyField(source="owner.email")
 
     class Meta:
         model = UserProfile
