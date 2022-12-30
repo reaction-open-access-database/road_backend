@@ -1,6 +1,6 @@
 from typing import Any
 
-from rdkit.AllChem import Mol
+from rdkit.Chem.AllChem import Mol
 
 def CalcExactMolWt(mol: Mol, onlyHeavy: bool = ...) -> float: ...
 def CalcMolFormula(

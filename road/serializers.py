@@ -8,16 +8,22 @@ from typing import Any, Dict, Optional
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from rdkit import Chem
 from rdkit.Chem.rdMolDescriptors import CalcMolFormula, CalcExactMolWt
-from rdkit.Chem.Draw import rdMolDraw2D
+from rdkit.Chem.Draw.rdMolDraw2D import MolDraw2DSVG
 from rdkit.Chem.AllChem import Mol
-from rest_framework import serializers
+from rest_framework.serializers import (
+    Field,
+    HyperlinkedModelSerializer,
+    HyperlinkedRelatedField,
+    ReadOnlyField,
+    SerializerMethodField,
+)
 
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
 from .exceptions import InvalidMolecule
 
 
 class RDKitMoleculeJSONField(
-    serializers.Field[Any, str, Any, Any]  # pylint: disable=unsubscriptable-object
+    Field[Any, str, Any, Any]  # pylint: disable=unsubscriptable-object
 ):
     """
     A field that serializes and deserializes RDKit molecules to and from JSON.
@@ -52,7 +58,7 @@ class RDKitMoleculeJSONField(
 
 
 class RDKitMoleculeSmilesField(
-    serializers.Field[Any, str, str, Any]  # pylint: disable=unsubscriptable-object
+    Field[Any, str, str, Any]  # pylint: disable=unsubscriptable-object
 ):
     """
     A field that serializes and deserializes RDKit molecules to and from SMILES.
@@ -74,7 +80,7 @@ class RDKitMoleculeSmilesField(
 
 
 class RDKitMoleculeInchiField(
-    serializers.Field[Any, str, str, Any]  # pylint: disable=unsubscriptable-object
+    Field[Any, str, str, Any]  # pylint: disable=unsubscriptable-object
 ):
     """
     A field that serializes and deserializes RDKit molecules to and from InChI strings.
@@ -95,7 +101,7 @@ class RDKitMoleculeInchiField(
             raise InvalidMolecule("Invalid InChI data") from exc
 
 
-class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
+class MoleculeSerializer(HyperlinkedModelSerializer):
     """
     Serializer for the Molecule model.
     Displays the JSON, SMILES, InChI and SVG representations of the molecule.
@@ -105,10 +111,10 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
     json = RDKitMoleculeJSONField(source="*", required=False)
     smiles = RDKitMoleculeSmilesField(source="*", required=False)
     inchi = RDKitMoleculeInchiField(source="*", required=False)
-    svg = serializers.SerializerMethodField()
-    mw = serializers.SerializerMethodField()
-    formula = serializers.SerializerMethodField()
-    id = serializers.ReadOnlyField()
+    svg = SerializerMethodField()
+    mw = SerializerMethodField()
+    formula = SerializerMethodField()
+    id = ReadOnlyField()
 
     class Meta:
         model = Molecule
@@ -148,7 +154,7 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_svg(self, obj: Molecule) -> str:
         """Return the text of an SVG image of the molecule."""
-        drawer = rdMolDraw2D.MolDraw2DSVG(200, 200)
+        drawer = MolDraw2DSVG(200, 200)
         drawer.DrawMolecule(obj.molecule)
         drawer.FinishDrawing()
         return drawer.GetDrawingText().replace("svg:", "")
@@ -162,13 +168,13 @@ class MoleculeSerializer(serializers.HyperlinkedModelSerializer):
         return CalcMolFormula(obj.molecule)
 
 
-class ReactionSerializer(serializers.HyperlinkedModelSerializer):
+class ReactionSerializer(HyperlinkedModelSerializer):
     """
     Serializer for the Reaction model.
     Displays the components of the reaction.
     """
 
-    components = serializers.HyperlinkedRelatedField(
+    components: HyperlinkedRelatedField[ReactionComponent] = HyperlinkedRelatedField(
         many=True, read_only=True, view_name="reactioncomponent-detail"
     )
 
@@ -177,7 +183,7 @@ class ReactionSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "components"]
 
 
-class ReactionComponentSerializer(serializers.HyperlinkedModelSerializer):
+class ReactionComponentSerializer(HyperlinkedModelSerializer):
     """
     Serializer for the ReactionComponent model.
     Displays the reaction, the molecule and the role of the molecule in the reaction.
@@ -188,27 +194,27 @@ class ReactionComponentSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "reaction", "molecule", "component_type"]
 
 
-class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
+class UserProfileSerializer(HyperlinkedModelSerializer):
     """
     Serializer for the UserProfile model.
     Displays the user's username and email address.
     """
 
-    username = serializers.ReadOnlyField(source="user.username")
-    email = serializers.ReadOnlyField(source="user.email")
+    username = ReadOnlyField(source="user.username")
+    email = ReadOnlyField(source="user.email")
 
     class Meta:
         model = UserProfile
         fields = ["url", "username", "email"]
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(HyperlinkedModelSerializer):
     """
     Serializer for the User model.
     Displays the user's profile.
     """
 
-    profile = serializers.HyperlinkedRelatedField(
+    profile: HyperlinkedRelatedField[UserProfile] = HyperlinkedRelatedField(
         read_only=True, view_name="userprofile-detail"
     )
 
