@@ -7,9 +7,9 @@ from typing import Any, Dict, Optional
 
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from rdkit import Chem
-from rdkit.Chem.rdMolDescriptors import CalcMolFormula, CalcExactMolWt
-from rdkit.Chem.Draw.rdMolDraw2D import MolDraw2DSVG
 from rdkit.Chem.AllChem import Mol
+from rdkit.Chem.Draw.rdMolDraw2D import MolDraw2DSVG
+from rdkit.Chem.rdMolDescriptors import CalcExactMolWt, CalcMolFormula
 from rest_framework.serializers import (
     Field,
     HyperlinkedModelSerializer,
@@ -18,8 +18,8 @@ from rest_framework.serializers import (
     SerializerMethodField,
 )
 
-from .models import Molecule, Reaction, ReactionComponent, UserProfile
 from .exceptions import InvalidMolecule
+from .models import Molecule, Reaction, ReactionComponent, UserProfile
 
 
 class RDKitMoleculeJSONField(

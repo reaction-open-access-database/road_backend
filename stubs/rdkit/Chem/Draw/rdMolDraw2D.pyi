@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from rdkit.Chem.AllChem import Mol, AtomPairsParameters
+from rdkit.Chem.AllChem import AtomPairsParameters, Mol
 
 class MolDraw2D:
     def DrawMolecule(

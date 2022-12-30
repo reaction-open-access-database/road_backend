@@ -3,8 +3,8 @@ Defines the admin interface for ROAD.
 """
 
 from django.contrib import admin
-from .models import UserProfile, Molecule, Reaction, ReactionComponent, ReactionSource
 
+from .models import Molecule, Reaction, ReactionComponent, ReactionSource, UserProfile
 
 admin.site.register(UserProfile)
 

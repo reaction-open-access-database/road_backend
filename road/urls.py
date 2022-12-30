@@ -2,26 +2,25 @@
 Defines the URL routes for ROAD, including the router for the REST API.
 """
 
-from django.urls import path, include
 from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import (
-    VerifyEmailView,
-    RegisterView,
     ConfirmEmailView,
+    RegisterView,
     ResendEmailVerificationView,
+    VerifyEmailView,
 )
 from dj_rest_auth.views import LoginView, LogoutView
+from django.urls import include, path
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenVerifyView
 
 from .views import (
-    MoleculeViewSet,
-    ReactionViewSet,
-    ReactionComponentViewSet,
-    UserViewSet,
     MoleculeQueryView,
+    MoleculeViewSet,
+    ReactionComponentViewSet,
+    ReactionViewSet,
+    UserViewSet,
 )
-
 
 router = routers.DefaultRouter()
 router.register("molecules", MoleculeViewSet)

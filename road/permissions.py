@@ -4,10 +4,9 @@ The permissions for the ROAD REST API.
 
 from typing import Any
 
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework.request import Request
 from rest_framework.views import APIView
-
 
 # Ensure that every class contains has_permission AND
 # has_object_permission methods

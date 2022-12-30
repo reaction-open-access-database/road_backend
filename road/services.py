@@ -7,7 +7,7 @@ from typing import Optional
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.db import transaction
 from django.db.models import QuerySet
-from rdkit.Chem.AllChem import Mol, ChemicalReaction
+from rdkit.Chem.AllChem import ChemicalReaction, Mol
 
 from .models import Molecule, Reaction, ReactionComponent
 

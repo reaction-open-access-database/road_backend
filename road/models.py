@@ -2,13 +2,13 @@
 The models for ROAD.
 """
 
-from typing import Any, Optional, Iterable
+from typing import Any, Iterable, Optional
 
-from django_rdkit import models
-from rdkit import Chem
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django_rdkit import models
+from rdkit import Chem
 
 
 class Molecule(models.Model):

@@ -13,3 +13,7 @@ mypy_path = "stubs"
 
 [tool.django-stubs]
 django_settings_module = "settings.test"
+
+[tool.isort]
+profile = "black"
+skip_glob = ["road/migrations/*"]

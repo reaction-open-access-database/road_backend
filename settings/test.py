@@ -16,7 +16,7 @@ os.environ["LOGIN_URL"] = "login/"
 os.environ["ALLOWED_HOST"] = "localhost"
 
 # If this is a development environment, load secret key, database, etc from .env file
-from dotenv import load_dotenv, find_dotenv  # pylint: disable=wrong-import-position
+from dotenv import find_dotenv, load_dotenv  # pylint: disable=wrong-import-position
 
 load_dotenv(find_dotenv())
 

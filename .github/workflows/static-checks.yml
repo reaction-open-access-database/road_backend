@@ -49,4 +49,4 @@ jobs:
         DB_PORT: ${{ secrets.DB_PORT }}
 
     - name: Checking code with isort
-      run: isort --check-only $(git ls-files '*.py')
+      run: isort --check-only --diff .

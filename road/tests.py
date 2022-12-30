@@ -15,7 +15,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from .models import Molecule, Reaction, ReactionComponent
-from .services import reaction_create, get_reactions_for_molecule
+from .services import get_reactions_for_molecule, reaction_create
 
 
 class MoleculeTest(APITestCase):
