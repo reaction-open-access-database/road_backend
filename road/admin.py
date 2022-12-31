@@ -2,7 +2,10 @@
 Defines the admin interface for ROAD.
 """
 
+import json
+
 from django.contrib import admin
+from django.forms import ModelForm, JSONField
 from reversion.admin import VersionAdmin
 
 from .models import Molecule, Reaction, ReactionComponent, ReactionSource, UserProfile
@@ -25,6 +28,15 @@ class ReactionSourceAdmin(VersionAdmin):
     """Admin interface for the ReactionSource model."""
 
 
+class PrettyJSONEncoder(json.JSONEncoder):
+    def __init__(self, *args, indent, sort_keys, **kwargs):
+        super().__init__(*args, indent=2, sort_keys=True, **kwargs)
+
+
+class MoleculeForm(ModelForm):
+    molecule = JSONField(encoder=PrettyJSONEncoder)
+
+
 @admin.register(Molecule)
 class MoleculeAdmin(
     VersionAdmin
@@ -34,4 +46,6 @@ class MoleculeAdmin(
     Displays the molecule name and molecular formula.
     """
 
-    list_display = ("name", "molecular_formula")
+    list_display = ("id", "name", "molecular_formula")
+    form = MoleculeForm
+    readonly_fields = ("molecular_formula",)

@@ -28,7 +28,11 @@ class SerializableMolField(models.MolField):
 
     def to_python(self, value: Any) -> Mol:
         try:
-            return JSONToMols(value)[0]
+            if isinstance(value, str):
+                json_data = json.loads(value)
+            else:
+                json_data = value
+            return JSONToMols(json.dumps(json_data))[0]
         except RuntimeError:
             return super().to_python(value)  # type: ignore
 
