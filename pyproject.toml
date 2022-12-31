@@ -10,6 +10,7 @@ check = true
 [tool.mypy]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 mypy_path = "stubs"
+exclude = ["road/migrations/", "venv/"]
 
 [tool.django-stubs]
 django_settings_module = "settings.test"

@@ -40,7 +40,7 @@ jobs:
 
     - name: Checking code with mypy
       if: always()
-      run: mypy --strict $(git ls-files '*.py')
+      run: mypy --strict .
       env:
         DJANGO_SETTINGS_MODULE: settings.test
         SECRET_KEY: ${{ secrets.SECRET_KEY }}

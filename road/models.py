@@ -18,8 +18,8 @@ class SerializableMolField(models.MolField):
     Additionally, it provides the ability to serialize and deserialize molecules to/from JSON.
     """
 
-    def value_from_object(self, obj: models.Model):
-        mol = super().value_from_object(obj)
+    def value_from_object(self, obj: models.Model) -> Any:
+        mol = super().value_from_object(obj)  # type: ignore
         return json.loads(Chem.MolToJSON(mol))
 
 
