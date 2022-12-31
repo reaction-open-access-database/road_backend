@@ -120,6 +120,20 @@ class MoleculeTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Molecule.objects.count(), 0)
 
+    def test_serializable_mol_field(self) -> None:
+        """Test that the SerializableMolField class can correctly serialize and deserialize molecules."""
+        molecule = AllChem.MolFromSmiles("C=C-C")
+        name = "propene"
+
+        m = Molecule.objects.create(molecule=molecule, name=name, owner=self._user)
+
+        db_json_str = Molecule.molecule.field.value_to_string(m)
+
+        db_molecule = AllChem.JSONToMols(db_json_str)[0]
+
+        self.assertTrue(molecule.HasSubstructMatch(db_molecule))
+        self.assertTrue(db_molecule.HasSubstructMatch(molecule))
+
     # def test_molecular_formula(self):
     #     pass
 
