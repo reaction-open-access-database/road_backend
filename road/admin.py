@@ -3,8 +3,9 @@ Defines the admin interface for ROAD.
 """
 
 from django.contrib import admin
-from .models import UserProfile, Molecule, Reaction, ReactionComponent, ReactionSource
 from reversion.admin import VersionAdmin
+
+from .models import UserProfile, Molecule, Reaction, ReactionComponent, ReactionSource
 
 
 admin.site.register(UserProfile)
@@ -12,17 +13,17 @@ admin.site.register(UserProfile)
 
 @admin.register(Reaction)
 class ReactionAdmin(VersionAdmin):
-    pass
+    """Admin interface for the Reaction model."""
 
 
 @admin.register(ReactionComponent)
 class ReactionComponentAdmin(VersionAdmin):
-    pass
+    """Admin interface for the ReactionComponent model."""
 
 
 @admin.register(ReactionSource)
 class ReactionSourceAdmin(VersionAdmin):
-    pass
+    """Admin interface for the ReactionSource model."""
 
 
 @admin.register(Molecule)

@@ -2,17 +2,22 @@
 The models for ROAD.
 """
 
+import json
 from typing import Any, Iterable, Optional
 
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
-from django_rdkit import models
-from rdkit import Chem
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import json
+from django_rdkit import models
+from rdkit import Chem
 
 
 class SerializableMolField(models.MolField):
+    """
+    A field that stores RDKit molecules in the database.
+    Additionally, it provides the ability to serialize and deserialize molecules to/from JSON.
+    """
+
     def value_from_object(self, obj: models.Model):
         mol = super().value_from_object(obj)
         return json.loads(Chem.MolToJSON(mol))
