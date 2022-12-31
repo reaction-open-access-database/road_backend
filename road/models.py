@@ -25,6 +25,12 @@ class SerializableMolField(models.MolField):
     def value_from_object(self, obj: models.Model) -> Any:
         return json.loads(self.value_to_string(obj))
 
+    def to_python(self, value):
+        try:
+            return Chem.JSONToMols(value)[0]
+        except RuntimeError:
+            return super().to_python(value)
+
 
 class Molecule(models.Model):
     """
