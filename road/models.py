@@ -3,11 +3,18 @@ from rdkit import Chem
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import json
+
+
+class SerializableMolField(models.MolField):
+    def value_from_object(self, obj: models.Model):
+        mol = super().value_from_object(obj)
+        return json.loads(Chem.MolToJSON(mol))
 
 
 class Molecule(models.Model):
     name = models.CharField(max_length=256)
-    molecule = models.MolField()
+    molecule = SerializableMolField()
     owner = models.ForeignKey(User, on_delete=models.RESTRICT,
                               related_name='molecules')
     molecular_formula = models.CharField(max_length=256)
