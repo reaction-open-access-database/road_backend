@@ -26,6 +26,7 @@ jobs:
       run: black --diff --check $(git ls-files '*.py')
 
     - name: Checking code with pylint
+      if: always()
       env:
         DJANGO_SETTINGS_MODULE: settings.test
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -38,6 +39,7 @@ jobs:
       run: pylint $(git ls-files '*.py')
 
     - name: Checking code with mypy
+      if: always()
       run: mypy --strict $(git ls-files '*.py')
       env:
         DJANGO_SETTINGS_MODULE: settings.test
@@ -49,4 +51,5 @@ jobs:
         DB_PORT: ${{ secrets.DB_PORT }}
 
     - name: Checking code with isort
+      if: always()
       run: isort --check-only --diff .
