@@ -1,3 +1,7 @@
+"""
+Defines the admin interface for ROAD.
+"""
+
 from django.contrib import admin
 from .models import UserProfile, Molecule, Reaction, ReactionComponent, \
     ReactionSource
@@ -23,5 +27,12 @@ class ReactionSourceAdmin(VersionAdmin):
 
 
 @admin.register(Molecule)
-class MoleculeAdmin(VersionAdmin):
-    list_display = ('name', 'molecular_formula')
+class MoleculeAdmin(
+    VersionAdmin
+):  # pylint: disable=unsubscriptable-object, too-few-public-methods
+    """
+    Custom admin interface for the Molecule model.
+    Displays the molecule name and molecular formula.
+    """
+
+    list_display = ("name", "molecular_formula")
