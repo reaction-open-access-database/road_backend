@@ -9,7 +9,7 @@ from django.contrib.auth.models import User  # pylint: disable=imported-auth-use
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django_rdkit import models
-from rdkit.Chem import Mol, MolToJSON, MolToSmiles, MolToInchi, SanitizeMol, JSONToMols
+from rdkit.Chem import JSONToMols, Mol, MolToInchi, MolToJSON, MolToSmiles, SanitizeMol
 from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
 

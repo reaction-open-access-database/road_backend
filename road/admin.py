@@ -3,9 +3,10 @@ Defines the admin interface for ROAD.
 """
 
 import json
+from typing import Any
 
 from django.contrib import admin
-from django.forms import ModelForm, JSONField
+from django.forms import JSONField, ModelForm
 from reversion.admin import VersionAdmin
 
 from .models import Molecule, Reaction, ReactionComponent, ReactionSource, UserProfile
@@ -29,11 +30,17 @@ class ReactionSourceAdmin(VersionAdmin):
 
 
 class PrettyJSONEncoder(json.JSONEncoder):
-    def __init__(self, *args, indent, sort_keys, **kwargs):
-        super().__init__(*args, indent=2, sort_keys=True, **kwargs)
+    """JSON encoder that formats the JSON nicely (indented and sorted)."""
+
+    def __init__(self, indent: Any, sort_keys: Any, **kwargs: Any) -> None:
+        super().__init__(indent=2, sort_keys=True, **kwargs)
 
 
-class MoleculeForm(ModelForm):
+class MoleculeForm(
+    ModelForm[Molecule]
+):  # pylint: disable=unsubscriptable-object, too-few-public-methods
+    """Form for the Molecule model."""
+
     molecule = JSONField(encoder=PrettyJSONEncoder)
 
 
