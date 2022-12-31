@@ -5,8 +5,7 @@ Defines the admin interface for ROAD.
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import UserProfile, Molecule, Reaction, ReactionComponent, ReactionSource
-
+from .models import Molecule, Reaction, ReactionComponent, ReactionSource, UserProfile
 
 admin.site.register(UserProfile)
 
