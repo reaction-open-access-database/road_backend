@@ -9,7 +9,8 @@ from django.contrib.auth.models import User  # pylint: disable=imported-auth-use
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django_rdkit import models
-from rdkit import Chem
+from rdkit.Chem import Mol, MolToJSON, MolToSmiles, MolToInchi, SanitizeMol, JSONToMols
+from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 
 
 class SerializableMolField(models.MolField):
@@ -20,16 +21,16 @@ class SerializableMolField(models.MolField):
 
     def value_to_string(self, obj: models.Model) -> str:
         mol = super().value_from_object(obj)  # type: ignore
-        return Chem.MolToJSON(mol)
+        return MolToJSON(mol)
 
     def value_from_object(self, obj: models.Model) -> Any:
         return json.loads(self.value_to_string(obj))
 
-    def to_python(self, value):
+    def to_python(self, value: Any) -> Mol:
         try:
-            return Chem.JSONToMols(value)[0]
+            return JSONToMols(value)[0]
         except RuntimeError:
-            return super().to_python(value)
+            return super().to_python(value)  # type: ignore
 
 
 class Molecule(models.Model):
@@ -52,17 +53,17 @@ class Molecule(models.Model):
         update_fields: Optional[Iterable[str]] = None,
     ) -> None:
         """Save the molecule."""
-        Chem.SanitizeMol(self.molecule)
-        self.molecular_formula = Chem.rdMolDescriptors.CalcMolFormula(self.molecule)
+        SanitizeMol(self.molecule)
+        self.molecular_formula = CalcMolFormula(self.molecule)
         super().save(force_insert, force_update, using, update_fields)
 
     def get_inchi(self) -> str:
         """Return the InChI representation of the molecule."""
-        return Chem.MolToInchi(self.molecule)
+        return MolToInchi(self.molecule)
 
     def get_smiles(self) -> str:
         """Return the SMILES representation of the molecule."""
-        return Chem.MolToSmiles(self.molecule)
+        return MolToSmiles(self.molecule)
 
 
 class Reaction(models.Model):
