@@ -13,7 +13,7 @@ from query_parser import (  # pylint: disable=import-error, no-name-in-module
     QueryParserError,
     build_molecule_query,
 )
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
 from rest_framework.request import Request
@@ -42,7 +42,7 @@ class HideUnauthorised:  # pylint: disable=too-few-public-methods
         raise NotFound()
 
 
-class MoleculeViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class MoleculeViewSet(ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Molecule model.
     """
@@ -56,7 +56,7 @@ class MoleculeViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable
         serializer.save(owner=self.request.user)
 
 
-class ReactionViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class ReactionViewSet(ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Reaction model.
     """
@@ -70,7 +70,7 @@ class ReactionViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable
         serializer.save(owner=self.request.user)
 
 
-class ReactionComponentViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class ReactionComponentViewSet(ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the ReactionComponent model.
     """
@@ -84,7 +84,7 @@ class ReactionComponentViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint
         serializer.save(owner=self.request.user)
 
 
-class UserProfileViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):  # type: ignore
+class UserProfileViewSet(HideUnauthorised, ReadOnlyModelViewSet):  # type: ignore
     """
     ViewSet for the UserProfile model.
     """
