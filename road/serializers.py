@@ -16,6 +16,7 @@ from rest_framework.serializers import (
     HyperlinkedRelatedField,
     ReadOnlyField,
     SerializerMethodField,
+    ValidationError,
 )
 
 from .exceptions import InvalidMolecule
@@ -95,7 +96,27 @@ class RDKitMoleculeInchiField(Field):  # type: ignore
             raise InvalidMolecule("Invalid InChI data") from exc
 
 
-class MoleculeSerializer(HyperlinkedModelSerializer):
+class CreateOnlySerializerMixin:
+    """
+    A mixin that prevents a serializer from editing specified fields.
+    """
+
+    class Meta:
+        create_only_fields = []
+
+    def to_internal_value(self, data):
+        data = super().to_internal_value(data)
+
+        if self.instance is not None:
+            # TODO: Change this to check whether the initial and the updated value are the same
+            for field_name in self.Meta.create_only_fields:
+                if field_name in data:
+                    raise ValidationError({field_name: "field cannot be edited"})
+
+        return data
+
+
+class MoleculeSerializer(CreateOnlySerializerMixin, HyperlinkedModelSerializer):
     """
     Serializer for the Molecule model.
     Displays the JSON, SMILES, InChI and SVG representations of the molecule.
@@ -123,6 +144,11 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
             "formula",
             "id",
         ]
+        create_only_fields = [
+            "json",
+            "smiles",
+            "inchi",
+        ]  # TODO: Test commenting this out
 
     def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
         attrs.setdefault("json", None)
