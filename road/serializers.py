@@ -8,7 +8,6 @@ from typing import Any, Dict, Optional
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from rdkit import Chem
 from rdkit.Chem.AllChem import Mol
-from rdkit.Chem.Draw.rdMolDraw2D import MolDraw2DSVG
 from rdkit.Chem.rdMolDescriptors import CalcExactMolWt, CalcMolFormula
 from rest_framework.serializers import (
     Field,
@@ -105,7 +104,6 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
     json = RDKitMoleculeJSONField(source="*", required=False)
     smiles = RDKitMoleculeSmilesField(source="*", required=False)
     inchi = RDKitMoleculeInchiField(source="*", required=False)
-    svg = SerializerMethodField()
     mw = SerializerMethodField()
     formula = SerializerMethodField()
     id = ReadOnlyField()
@@ -118,7 +116,6 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
             "json",
             "smiles",
             "inchi",
-            "svg",
             "mw",
             "formula",
             "id",
@@ -145,13 +142,6 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
             )
 
         return attrs
-
-    def get_svg(self, obj: Molecule) -> str:
-        """Return the text of an SVG image of the molecule."""
-        drawer = MolDraw2DSVG(200, 200)
-        drawer.DrawMolecule(obj.molecule)
-        drawer.FinishDrawing()
-        return drawer.GetDrawingText().replace("svg:", "")
 
     def get_mw(self, obj: Molecule) -> float:
         """Return the molecular weight of the molecule."""
