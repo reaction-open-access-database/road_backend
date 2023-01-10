@@ -30,7 +30,7 @@ from .serializers import (
 )
 
 
-class HideUnauthorised:  # pylint: disable=too-few-public-methods
+class HideUnauthorisedMixin:  # pylint: disable=too-few-public-methods
     """Override the default permission_denied method to return a 404 instead of a 403."""
 
     def permission_denied(
@@ -84,7 +84,7 @@ class ReactionComponentViewSet(ModelViewSet):  # type: ignore  # pylint: disable
         serializer.save(owner=self.request.user)
 
 
-class UserProfileViewSet(HideUnauthorised, ReadOnlyModelViewSet):  # type: ignore
+class UserProfileViewSet(HideUnauthorisedMixin, ReadOnlyModelViewSet):  # type: ignore
     """
     ViewSet for the UserProfile model.
     """
