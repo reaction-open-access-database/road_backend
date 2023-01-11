@@ -13,18 +13,18 @@ from query_parser import (  # pylint: disable=import-error, no-name-in-module
     QueryParserError,
     build_molecule_query,
 )
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
 from rest_framework.request import Request
 from rest_framework.serializers import BaseSerializer
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .access_policies import (
     MoleculeAccessPolicy,
+    OverrideAccessViewSetMixin,
     ReactionAccessPolicy,
     ReactionComponentAccessPolicy,
     UserProfileAccessPolicy,
-    OverrideAccessViewSetMixin,
 )
 from .exceptions import InvalidQuery, ParameterNotProvided
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
