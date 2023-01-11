@@ -1,9 +1,11 @@
-import inspect
+"""
+The access policies to define the permissions for ROAD.
+"""
 
-from typing import Type
+from typing import Any
 
-from rest_access_policy import AccessPolicy
-from rest_framework.response import Response
+from rest_access_policy.access_policy import AccessPolicy
+from rest_access_policy.access_view_set_mixin import AccessViewSetMixin
 
 # Safe actions are: "list", "retrieve", "metadata"
 # Unsafe actions are: "create", "update", "partial_update", "destroy"
@@ -32,6 +34,10 @@ ANYONE_ALLOW_READ = {
 
 
 class MoleculeAccessPolicy(AccessPolicy):
+    """
+    Access policy for the Molecule model.
+    """
+
     statements = [
         SUPERUSER_ALLOW_ALL,
         OWNER_ALLOW_UPDATE,
@@ -41,18 +47,30 @@ class MoleculeAccessPolicy(AccessPolicy):
 
 
 class ReactionAccessPolicy(AccessPolicy):
+    """
+    Access policy for the Reaction model.
+    """
+
     statements = [
         SUPERUSER_ALLOW_ALL,
     ]
 
 
 class ReactionComponentAccessPolicy(AccessPolicy):
+    """
+    Access policy for the ReactionComponent model.
+    """
+
     statements = [
         SUPERUSER_ALLOW_ALL,
     ]
 
 
 class UserProfileAccessPolicy(AccessPolicy):
+    """
+    Access policy for the UserProfile model.
+    """
+
     statements = [
         SUPERUSER_ALLOW_ALL,
         {
@@ -64,26 +82,14 @@ class UserProfileAccessPolicy(AccessPolicy):
     ]
 
 
-class OverrideAccessViewSetMixin(object):
-    access_policy: Type[AccessPolicy]
+class OverrideAccessViewSetMixin(
+    AccessViewSetMixin
+):  # pylint: disable=too-few-public-methods
+    """
+    Mixin to set the permission classes for a ViewSet to the access policy.
+    """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args: Any, **kwargs: Any):
+        super().__init__(*args, **kwargs)  # type: ignore
 
-        access_policy = getattr(self, "access_policy", None)
-
-        if not inspect.isclass(access_policy) or not issubclass(
-            access_policy, AccessPolicy
-        ):
-            raise Exception(
-                """
-                    When mixing AccessViewSetMixin into your view set, you must assign an AccessPolicy 
-                    to the access_policy class attribute.
-                """
-            )
-
-        self.permission_classes = [access_policy]
-
-    def finalize_response(self, request, response, *args, **kwargs) -> Response:
-        response = super().finalize_response(request, response, *args, **kwargs)
-        return response
+        self.permission_classes = [self.access_policy]

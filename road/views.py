@@ -6,7 +6,7 @@ The views and ViewSets for the ROAD REST API.
 
 from __future__ import annotations
 
-from typing import Any, List, NoReturn
+from typing import NoReturn
 
 from django.db.models import Q, QuerySet
 from query_parser import (  # pylint: disable=import-error, no-name-in-module
@@ -91,7 +91,11 @@ class ReactionComponentViewSet(OverrideAccessViewSetMixin, ModelViewSet):  # typ
         serializer.save(owner=self.request.user)
 
 
-class UserProfileViewSet(OverrideAccessViewSetMixin, HideUnauthorisedMixin, ReadOnlyModelViewSet):  # type: ignore
+class UserProfileViewSet(
+    OverrideAccessViewSetMixin,
+    HideUnauthorisedMixin,
+    ReadOnlyModelViewSet,  # type: ignore
+):
     """
     ViewSet for the UserProfile model.
     """
