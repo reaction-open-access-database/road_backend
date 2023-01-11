@@ -258,10 +258,12 @@ class PermissionTest(APITestCase):
             )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        with self.subTest("Authenticated users can update their own molecules"):
-            response = self.client.put(
+        with self.subTest(
+            "Authenticated users can update the names of their own molecules"
+        ):
+            response = self.client.patch(
                 reverse("molecule-detail", args=[self._normal_molecule.id]),
-                {"name": "test", "smiles": "C"},
+                {"name": "test"},
                 format="json",
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
