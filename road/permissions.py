@@ -12,33 +12,6 @@ from rest_framework.views import APIView
 # has_object_permission methods
 
 
-class IsOwner(BasePermission):
-    """
-    Allows the owner of an object to view and edit it,
-    but other authenticated users to view it only.
-    """
-
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        return bool(request.user and request.user.is_authenticated)
-
-    def has_object_permission(self, request: Request, view: APIView, obj: Any) -> bool:
-        return bool(
-            request.user and request.user.is_authenticated and request.user == obj.owner
-        )
-
-
-class IsSuperUser(BasePermission):
-    """Allows access only to superusers."""
-
-    def has_permission(self, request: Request, view: APIView) -> bool:
-        return bool(
-            request.user and request.user.is_authenticated and request.user.is_superuser
-        )
-
-    def has_object_permission(self, request: Request, view: APIView, obj: Any) -> bool:
-        return self.has_permission(request, view)
-
-
 class ReadOnly(BasePermission):
     """Allows access only to read-only methods."""
 

@@ -8,7 +8,6 @@ from typing import Any, Dict, Optional
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from rdkit import Chem
 from rdkit.Chem.AllChem import Mol
-from rdkit.Chem.Draw.rdMolDraw2D import MolDraw2DSVG
 from rdkit.Chem.rdMolDescriptors import CalcExactMolWt, CalcMolFormula
 from rest_framework.serializers import (
     Field,
@@ -105,7 +104,6 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
     json = RDKitMoleculeJSONField(source="*", required=False)
     smiles = RDKitMoleculeSmilesField(source="*", required=False)
     inchi = RDKitMoleculeInchiField(source="*", required=False)
-    svg = SerializerMethodField()
     mw = SerializerMethodField()
     formula = SerializerMethodField()
     id = ReadOnlyField()
@@ -118,7 +116,6 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
             "json",
             "smiles",
             "inchi",
-            "svg",
             "mw",
             "formula",
             "id",
@@ -137,21 +134,20 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
 
         provided_representations = [rep for rep in representations if rep]
 
+        if len(provided_representations) > 1:
+            raise InvalidMolecule(
+                "At most one of JSON, SMILES or InChI may be provided."
+            )
         if len(provided_representations) == 1:
             attrs["molecule"] = provided_representations[0]
-        else:
-            raise InvalidMolecule(
-                "Exactly one of JSON, SMILES or InChI must be provided."
-            )
 
         return attrs
 
-    def get_svg(self, obj: Molecule) -> str:
-        """Return the text of an SVG image of the molecule."""
-        drawer = MolDraw2DSVG(200, 200)
-        drawer.DrawMolecule(obj.molecule)
-        drawer.FinishDrawing()
-        return drawer.GetDrawingText().replace("svg:", "")
+    def create(self, validated_data: Dict[str, Any]) -> Any:
+        if "molecule" not in validated_data:
+            raise InvalidMolecule("No molecule data provided.")
+
+        return super().create(validated_data)
 
     def get_mw(self, obj: Molecule) -> float:
         """Return the molecular weight of the molecule."""
