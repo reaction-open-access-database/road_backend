@@ -219,79 +219,85 @@ class PermissionTest(APITestCase):
         """Test that anonymous users can only read molecules."""
         self.client.force_authenticate(user=self._anonymous_user)
 
-        # Anonymous users are not allowed to create molecules
-        response = self.client.post(
-            reverse("molecule-list"), {"name": "methane", "smiles": "C"}, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        with self.subTest("Anonymous users are not allowed to create molecules"):
+            response = self.client.post(
+                reverse("molecule-list"),
+                {"name": "methane", "smiles": "C"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-        # Anonymous users can list molecules
-        response = self.client.get(reverse("molecule-list"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        with self.subTest("Anonymous users can list molecules"):
+            response = self.client.get(reverse("molecule-list"))
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Anonymous users can retrieve molecules
-        response = self.client.get(
-            reverse("molecule-detail", args=[self._normal_molecule.id])
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        with self.subTest("Anonymous users can retrieve molecules"):
+            response = self.client.get(
+                reverse("molecule-detail", args=[self._normal_molecule.id])
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Anonymous users cannot update molecules
-        response = self.client.put(
-            reverse("molecule-detail", args=[self._normal_molecule.id]),
-            {"name": "test", "smiles": "C"},
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(self._normal_molecule.name, "methane")
+        with self.subTest("Anonymous users cannot update molecules"):
+            response = self.client.put(
+                reverse("molecule-detail", args=[self._normal_molecule.id]),
+                {"name": "test", "smiles": "C"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+            self.assertEqual(self._normal_molecule.name, "methane")
 
     def test_molecule_authenticated_permissions(self) -> None:
         """Test that authenticated users can only read and update their own molecules."""
         self.client.force_authenticate(user=self._normal_user)
 
-        # Authenticated users are allowed to create molecules
-        response = self.client.post(
-            reverse("molecule-list"), {"name": "methane", "smiles": "C"}, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        with self.subTest("Authenticated users are allowed to create molecules"):
+            response = self.client.post(
+                reverse("molecule-list"),
+                {"name": "methane", "smiles": "C"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Authenticated users can update their own molecules
-        response = self.client.put(
-            reverse("molecule-detail", args=[self._normal_molecule.id]),
-            {"name": "test", "smiles": "C"},
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self._normal_molecule.refresh_from_db()
-        self.assertEqual(self._normal_molecule.name, "test")
+        with self.subTest("Authenticated users can update their own molecules"):
+            response = self.client.put(
+                reverse("molecule-detail", args=[self._normal_molecule.id]),
+                {"name": "test", "smiles": "C"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self._normal_molecule.refresh_from_db()
+            self.assertEqual(self._normal_molecule.name, "test")
 
-        # Authenticated users cannot update other users' molecules
-        response = self.client.put(
-            reverse("molecule-detail", args=[self._admin_molecule.id]),
-            {"name": "test", "smiles": "CC"},
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(self._admin_molecule.name, "ethane")
+        with self.subTest("Authenticated users cannot update other users' molecules"):
+            response = self.client.put(
+                reverse("molecule-detail", args=[self._admin_molecule.id]),
+                {"name": "test", "smiles": "CC"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+            self.assertEqual(self._admin_molecule.name, "ethane")
 
     def test_molecule_admin_permissions(self) -> None:
         """Test that admin users can read and update all molecules."""
         self.client.force_authenticate(user=self._admin_user)
 
-        # Admins are allowed to create molecules
-        response = self.client.post(
-            reverse("molecule-list"), {"name": "ethane", "smiles": "CC"}, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        with self.subTest("Admins are allowed to create molecules"):
+            response = self.client.post(
+                reverse("molecule-list"),
+                {"name": "ethane", "smiles": "CC"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Admins can update other users' molecules
-        response = self.client.put(
-            reverse("molecule-detail", args=[self._normal_molecule.id]),
-            {"name": "test2", "smiles": "C"},
-            format="json",
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self._normal_molecule.refresh_from_db()
-        self.assertEqual(self._normal_molecule.name, "test2")
+        with self.subTest("Admins can update other users' molecules"):
+            response = self.client.put(
+                reverse("molecule-detail", args=[self._normal_molecule.id]),
+                {"name": "test2", "smiles": "C"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self._normal_molecule.refresh_from_db()
+            self.assertEqual(self._normal_molecule.name, "test2")
 
     # def test_reaction_permissions(self) -> None:
     #     pass
@@ -303,43 +309,43 @@ class PermissionTest(APITestCase):
         """Test that anonymous users cannot read user profiles."""
         self.client.force_authenticate(user=self._anonymous_user)
 
-        # Anonymous users cannot list user profiles
-        response = self.client.get(reverse("userprofile-list"))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        with self.subTest("Anonymous users cannot list user profiles"):
+            response = self.client.get(reverse("userprofile-list"))
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_profile_authenticated_permissions(self) -> None:
         """Test that authenticated users can only read their own user profiles."""
         self.client.force_authenticate(user=self._normal_user)
 
-        # Authenticated users can retrieve their own profile
-        response = self.client.get(
-            reverse("userprofile-detail", args=[self._normal_user.id])
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        with self.subTest("Authenticated users can retrieve their own profile"):
+            response = self.client.get(
+                reverse("userprofile-detail", args=[self._normal_user.id])
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Authenticated users cannot retrieve other users' profiles
-        response = self.client.get(
-            reverse("userprofile-detail", args=[self._admin_user.id])
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        with self.subTest("Authenticated users cannot retrieve other users' profiles"):
+            response = self.client.get(
+                reverse("userprofile-detail", args=[self._admin_user.id])
+            )
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        # Authenticated users cannot list profiles
-        response = self.client.get(reverse("userprofile-list"))
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        with self.subTest("Authenticated users cannot list profiles"):
+            response = self.client.get(reverse("userprofile-list"))
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_profile_admin_permissions(self) -> None:
         """Test that admin users can read all user profiles."""
         self.client.force_authenticate(user=self._admin_user)
 
-        # Admins can retrieve other users' profiles
-        response = self.client.get(
-            reverse("userprofile-detail", args=[self._normal_user.id])
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        with self.subTest("Admins can retrieve other users' profiles"):
+            response = self.client.get(
+                reverse("userprofile-detail", args=[self._normal_user.id])
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Admins can list profiles
-        response = self.client.get(reverse("userprofile-list"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        with self.subTest("Admins can list profiles"):
+            response = self.client.get(reverse("userprofile-list"))
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 # class UserAccountTest(APITestCase):
