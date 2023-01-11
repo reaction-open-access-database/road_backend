@@ -19,9 +19,16 @@ from rest_framework.generics import ListAPIView
 from rest_framework.request import Request
 from rest_framework.serializers import BaseSerializer
 
+from .access_policies import (
+    MoleculeAccessPolicy,
+    ReactionAccessPolicy,
+    ReactionComponentAccessPolicy,
+    UserProfileAccessPolicy,
+    OverrideAccessViewSetMixin,
+)
 from .exceptions import InvalidQuery, ParameterNotProvided
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
-from .permissions import IsOwner, IsSuperUser, ReadOnly
+from .permissions import ReadOnly
 from .serializers import (
     MoleculeSerializer,
     ReactionComponentSerializer,
@@ -42,67 +49,56 @@ class HideUnauthorisedMixin:  # pylint: disable=too-few-public-methods
         raise NotFound()
 
 
-class MoleculeViewSet(ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class MoleculeViewSet(OverrideAccessViewSetMixin, ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Molecule model.
     """
 
     queryset = Molecule.objects.all()
     serializer_class = MoleculeSerializer
-    permission_classes = [IsSuperUser | IsOwner | ReadOnly]
+    access_policy = MoleculeAccessPolicy
 
     def perform_create(self, serializer: BaseSerializer[Molecule]) -> None:
         """Create a new Molecule, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
-class ReactionViewSet(ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class ReactionViewSet(OverrideAccessViewSetMixin, ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Reaction model.
     """
 
     queryset = Reaction.objects.all()
     serializer_class = ReactionSerializer
-    permission_classes = [IsSuperUser | ReadOnly]
+    access_policy = ReactionAccessPolicy
 
     def perform_create(self, serializer: BaseSerializer[Reaction]) -> None:
         """Create a new Reaction, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
-class ReactionComponentViewSet(ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class ReactionComponentViewSet(OverrideAccessViewSetMixin, ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the ReactionComponent model.
     """
 
     queryset = ReactionComponent.objects.all()
     serializer_class = ReactionComponentSerializer
-    permission_classes = [IsSuperUser | ReadOnly]
+    access_policy = ReactionComponentAccessPolicy
 
     def perform_create(self, serializer: BaseSerializer[ReactionComponent]) -> None:
         """Create a new ReactionComponent, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
-class UserProfileViewSet(HideUnauthorisedMixin, ReadOnlyModelViewSet):  # type: ignore
+class UserProfileViewSet(OverrideAccessViewSetMixin, HideUnauthorisedMixin, ReadOnlyModelViewSet):  # type: ignore
     """
     ViewSet for the UserProfile model.
     """
 
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [IsSuperUser]
-
-    def get_permissions(self) -> List[Any]:
-        """
-        Allow users to view and edit their own profiles,
-        but only superusers to view and edit all profiles.
-        """
-        if self.action == "retrieve":
-            self.permission_classes = [IsOwner | IsSuperUser]
-        else:
-            self.permission_classes = [IsSuperUser]
-        return super().get_permissions()
+    access_policy = UserProfileAccessPolicy
 
 
 class QueryView(ListAPIView):  # type: ignore
