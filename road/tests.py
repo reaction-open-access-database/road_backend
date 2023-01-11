@@ -270,6 +270,16 @@ class PermissionTest(APITestCase):
             self._normal_molecule.refresh_from_db()
             self.assertEqual(self._normal_molecule.name, "test")
 
+        with self.subTest(
+            "Authenticated users cannot update the structure of their own molecules"
+        ):
+            response = self.client.patch(
+                reverse("molecule-detail", args=[self._normal_molecule.id]),
+                {"smiles": "CC"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
         with self.subTest("Authenticated users cannot update other users' molecules"):
             response = self.client.put(
                 reverse("molecule-detail", args=[self._admin_molecule.id]),
@@ -294,7 +304,7 @@ class PermissionTest(APITestCase):
         with self.subTest("Admins can update other users' molecules"):
             response = self.client.put(
                 reverse("molecule-detail", args=[self._normal_molecule.id]),
-                {"name": "test2", "smiles": "C"},
+                {"name": "test2", "smiles": "CCC"},
                 format="json",
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
