@@ -134,14 +134,20 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
 
         provided_representations = [rep for rep in representations if rep]
 
+        if len(provided_representations) > 1:
+            raise InvalidMolecule(
+                "At most one of JSON, SMILES or InChI may be provided."
+            )
         if len(provided_representations) == 1:
             attrs["molecule"] = provided_representations[0]
-        else:
-            raise InvalidMolecule(
-                "Exactly one of JSON, SMILES or InChI must be provided."
-            )
 
         return attrs
+
+    def create(self, validated_data: Dict[str, Any]) -> Any:
+        if "molecule" not in validated_data:
+            raise InvalidMolecule("No molecule data provided.")
+
+        return super().create(validated_data)
 
     def get_mw(self, obj: Molecule) -> float:
         """Return the molecular weight of the molecule."""
