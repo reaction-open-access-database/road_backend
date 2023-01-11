@@ -149,6 +149,15 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
 
         return super().create(validated_data)
 
+    def update(self, instance: Molecule, validated_data: Dict[str, Any]) -> Any:
+        if (
+            "molecule" in validated_data
+            and not self.context["request"].user.is_superuser
+        ):
+            raise InvalidMolecule("molecule field cannot be changed.")
+
+        return super().update(instance, validated_data)
+
     def get_mw(self, obj: Molecule) -> float:
         """Return the molecular weight of the molecule."""
         return CalcExactMolWt(obj.molecule)

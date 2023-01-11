@@ -277,7 +277,7 @@ class PermissionTest(APITestCase):
                 {"smiles": "CC"},
                 format="json",
             )
-            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+            self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         with self.subTest("Authenticated users cannot update other users' molecules"):
             response = self.client.put(
