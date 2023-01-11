@@ -8,13 +8,12 @@ ReactionTest:
 """
 
 from django.contrib.auth.models import (  # pylint: disable=imported-auth-user
-    User,
     AnonymousUser,
+    User,
 )
 from django.urls import reverse
 from django_rdkit.config import config
-from rdkit.Chem import AllChem
-from rdkit.Chem import MolFromSmiles
+from rdkit.Chem import AllChem, MolFromSmiles
 from rest_framework import status
 from rest_framework.test import APITestCase
 

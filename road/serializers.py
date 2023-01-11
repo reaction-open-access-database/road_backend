@@ -138,12 +138,12 @@ class MoleculeSerializer(HyperlinkedModelSerializer):
             raise InvalidMolecule(
                 "At most one of JSON, SMILES or InChI may be provided."
             )
-        elif len(provided_representations) == 1:
+        if len(provided_representations) == 1:
             attrs["molecule"] = provided_representations[0]
 
         return attrs
 
-    def create(self, validated_data: Dict[str, Any]) -> Molecule:
+    def create(self, validated_data: Dict[str, Any]) -> Any:
         if "molecule" not in validated_data:
             raise InvalidMolecule("No molecule data provided.")
 
