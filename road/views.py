@@ -6,22 +6,29 @@ The views and ViewSets for the ROAD REST API.
 
 from __future__ import annotations
 
-from typing import Any, List, NoReturn
+from typing import NoReturn
 
 from django.db.models import Q, QuerySet
 from query_parser import (  # pylint: disable=import-error, no-name-in-module
     QueryParserError,
     build_molecule_query,
 )
-from rest_framework import viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
 from rest_framework.request import Request
 from rest_framework.serializers import BaseSerializer
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+from .access_policies import (
+    MoleculeAccessPolicy,
+    OverrideAccessViewSetMixin,
+    ReactionAccessPolicy,
+    ReactionComponentAccessPolicy,
+    UserProfileAccessPolicy,
+)
 from .exceptions import InvalidQuery, ParameterNotProvided
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
-from .permissions import IsOwner, IsSuperUser, ReadOnly
+from .permissions import ReadOnly
 from .serializers import (
     MoleculeSerializer,
     ReactionComponentSerializer,
@@ -30,7 +37,7 @@ from .serializers import (
 )
 
 
-class HideUnauthorised:  # pylint: disable=too-few-public-methods
+class HideUnauthorisedMixin:  # pylint: disable=too-few-public-methods
     """Override the default permission_denied method to return a 404 instead of a 403."""
 
     def permission_denied(
@@ -42,67 +49,60 @@ class HideUnauthorised:  # pylint: disable=too-few-public-methods
         raise NotFound()
 
 
-class MoleculeViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class MoleculeViewSet(OverrideAccessViewSetMixin, ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Molecule model.
     """
 
     queryset = Molecule.objects.all()
     serializer_class = MoleculeSerializer
-    permission_classes = [IsSuperUser | IsOwner | ReadOnly]
+    access_policy = MoleculeAccessPolicy
 
     def perform_create(self, serializer: BaseSerializer[Molecule]) -> None:
         """Create a new Molecule, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
-class ReactionViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class ReactionViewSet(OverrideAccessViewSetMixin, ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the Reaction model.
     """
 
     queryset = Reaction.objects.all()
     serializer_class = ReactionSerializer
-    permission_classes = [IsSuperUser | ReadOnly]
+    access_policy = ReactionAccessPolicy
 
     def perform_create(self, serializer: BaseSerializer[Reaction]) -> None:
         """Create a new Reaction, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
-class ReactionComponentViewSet(viewsets.ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
+class ReactionComponentViewSet(OverrideAccessViewSetMixin, ModelViewSet):  # type: ignore  # pylint: disable=too-few-public-methods
     """
     ViewSet for the ReactionComponent model.
     """
 
     queryset = ReactionComponent.objects.all()
     serializer_class = ReactionComponentSerializer
-    permission_classes = [IsSuperUser | ReadOnly]
+    access_policy = ReactionComponentAccessPolicy
 
     def perform_create(self, serializer: BaseSerializer[ReactionComponent]) -> None:
         """Create a new ReactionComponent, and set the owner to the request's user."""
         serializer.save(owner=self.request.user)
 
 
-class UserProfileViewSet(HideUnauthorised, viewsets.ReadOnlyModelViewSet):  # type: ignore
+class UserProfileViewSet(
+    OverrideAccessViewSetMixin,
+    HideUnauthorisedMixin,
+    ReadOnlyModelViewSet,  # type: ignore
+):
     """
     ViewSet for the UserProfile model.
     """
 
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [IsSuperUser]
-
-    def get_permissions(self) -> List[Any]:
-        """
-        Allow users to view and edit their own profiles,
-        but only superusers to view and edit all profiles.
-        """
-        if self.action == "retrieve":
-            self.permission_classes = [IsOwner | IsSuperUser]
-        else:
-            self.permission_classes = [IsSuperUser]
-        return super().get_permissions()
+    access_policy = UserProfileAccessPolicy
 
 
 class QueryView(ListAPIView):  # type: ignore

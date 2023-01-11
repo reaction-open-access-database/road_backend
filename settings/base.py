@@ -184,6 +184,8 @@ EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_FROM"]
 
+DRF_ACCESS_POLICY = {"reusable_conditions": ["road.global_access_conditions"]}
+
 # Monkeypatching Django, so stubs will work for all generics,
 # see: https://github.com/typeddjango/django-stubs
 django_stubs_ext.monkeypatch()
