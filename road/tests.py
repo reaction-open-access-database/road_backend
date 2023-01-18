@@ -140,6 +140,30 @@ class MoleculeTest(APITestCase):
         self.assertTrue(mol.HasSubstructMatch(db_molecule))
         self.assertTrue(db_molecule.HasSubstructMatch(mol))
 
+    def test_duplicate_molecules(self) -> None:
+        """Test that duplicate molecules are not created."""
+        smiles = "O=O"
+        response = self.client.post(
+            reverse("molecule-list"),
+            {"name": "oxygen", "smiles": smiles},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Molecule.objects.count(), 1)
+        self.assertEqual(AllChem.MolToSmiles(Molecule.objects.get().molecule), smiles)
+        self.assertEqual(Molecule.objects.get().name, "oxygen")
+        self.assertEqual(Molecule.objects.get().owner, self._user)
+
+        response = self.client.post(
+            reverse("molecule-list"),
+            {"name": "duplicated oxygen", "smiles": smiles},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Molecule.objects.count(), 1)
+
     # def test_molecular_formula(self):
     #     pass
 

@@ -151,6 +151,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ],
+    "EXCEPTION_HANDLER": "road.services.custom_exception_handler",
 }
 
 AUTHENTICATION_BACKENDS = [

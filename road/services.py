@@ -2,12 +2,15 @@
 Miscellaneous functions for creating and retrieving molecules and reactions.
 """
 
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models import QuerySet
 from rdkit.Chem.AllChem import ChemicalReaction, Mol
+from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.views import exception_handler
 
 from .models import Molecule, Reaction, ReactionComponent
 
@@ -91,3 +94,25 @@ def molecule_get_or_create(rdkit_molecule: Mol, owner: User) -> Molecule:
     except Molecule.DoesNotExist:
         molecule = Molecule.objects.create(molecule=rdkit_molecule, owner=owner)
     return molecule
+
+
+def custom_exception_handler(
+    exc: Exception, context: Dict[str, Any]
+) -> Optional[Response]:
+    """A custom exception handler to return a 400 status code for database IntegrityErrors."""
+    # From https://stackoverflow.com/a/50776557
+    # Call REST framework's default exception handler first to get the standard error response.
+    response = exception_handler(exc, context)
+    print(context)
+
+    # if there is an IntegrityError and the error response hasn't already been generated
+    if isinstance(exc, IntegrityError) and not response:
+        response = Response(
+            {
+                "message": "There is a conflict between the data you are trying to save "
+                "and the current data."
+            },
+            status=HTTP_400_BAD_REQUEST,
+        )
+
+    return response

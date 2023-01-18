@@ -45,7 +45,7 @@ class Molecule(models.Model):
     """
 
     name = models.CharField(max_length=256)
-    molecule = SerializableMolField()
+    molecule = SerializableMolField(unique=True)  # type: ignore
     owner = models.ForeignKey(User, on_delete=models.RESTRICT, related_name="molecules")
     molecular_formula = models.CharField(max_length=256)
 
