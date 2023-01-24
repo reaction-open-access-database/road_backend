@@ -7,9 +7,9 @@ import re
 import sys
 from contextlib import contextmanager
 from io import StringIO
-from typing import Iterator, List, Optional, Callable
+from typing import Callable, Iterator, List, Optional
 
-from rdkit.Chem import Mol, MolFromSmiles, MolFromInchi
+from rdkit.Chem import Mol, MolFromInchi, MolFromSmiles
 from rdkit.rdBase import LogToPythonStderr
 
 from .exceptions import InvalidMolecule

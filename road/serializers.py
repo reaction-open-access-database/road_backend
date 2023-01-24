@@ -6,7 +6,7 @@ import json
 from typing import Any, Dict, Optional
 
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
-from rdkit.Chem import MolToJSON, JSONToMols, MolToSmiles, MolToInchi, MolFromInchi
+from rdkit.Chem import JSONToMols, MolToInchi, MolToJSON, MolToSmiles
 from rdkit.Chem.AllChem import Mol
 from rdkit.Chem.rdMolDescriptors import CalcExactMolWt, CalcMolFormula
 from rest_framework.serializers import (
@@ -19,7 +19,7 @@ from rest_framework.serializers import (
 
 from .exceptions import InvalidMolecule
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
-from .rdkit_wrapper import smiles_to_mol, inchi_to_mol
+from .rdkit_wrapper import inchi_to_mol, smiles_to_mol
 
 
 class RDKitMoleculeJSONField(Field):  # type: ignore
