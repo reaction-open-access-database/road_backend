@@ -69,10 +69,7 @@ class RDKitMoleculeSmilesField(Field):  # type: ignore
         if data == "":
             return {"smiles": None}
 
-        try:
-            return {"smiles": smiles_to_mol(data)}
-        except ValueError as exc:
-            raise InvalidMolecule("Invalid SMILES data") from exc
+        return {"smiles": smiles_to_mol(data)}
 
 
 class RDKitMoleculeInchiField(Field):  # type: ignore
