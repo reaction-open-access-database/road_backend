@@ -19,6 +19,7 @@ from rest_framework.serializers import (
 
 from .exceptions import InvalidMolecule
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
+from .rdkit_wrapper import smiles_to_mol
 
 
 class RDKitMoleculeJSONField(Field):  # type: ignore
@@ -69,7 +70,7 @@ class RDKitMoleculeSmilesField(Field):  # type: ignore
             return {"smiles": None}
 
         try:
-            return {"smiles": Chem.MolFromSmiles(data)}
+            return {"smiles": smiles_to_mol(data)}
         except ValueError as exc:
             raise InvalidMolecule("Invalid SMILES data") from exc
 
