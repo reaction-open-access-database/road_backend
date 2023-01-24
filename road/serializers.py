@@ -6,7 +6,7 @@ import json
 from typing import Any, Dict, Optional
 
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
-from rdkit import Chem
+from rdkit.Chem import MolToJSON, JSONToMols, MolToSmiles, MolToInchi, MolFromInchi
 from rdkit.Chem.AllChem import Mol
 from rdkit.Chem.rdMolDescriptors import CalcExactMolWt, CalcMolFormula
 from rest_framework.serializers import (
@@ -29,7 +29,7 @@ class RDKitMoleculeJSONField(Field):  # type: ignore
 
     def to_representation(self, value: Molecule) -> Any:
         """Convert the Molecule to JSON."""
-        return json.loads(Chem.MolToJSON(value.molecule))
+        return json.loads(MolToJSON(value.molecule))
 
     def to_internal_value(self, data: str) -> Dict[str, Optional[Mol]]:
         """Convert the JSON to an RDKit molecule."""
@@ -42,7 +42,7 @@ class RDKitMoleculeJSONField(Field):  # type: ignore
             json_data = data
 
         try:
-            mols = Chem.JSONToMols(json_data)
+            mols = JSONToMols(json_data)
         except RuntimeError as exc:
             raise InvalidMolecule("Invalid JSON data") from exc
 
@@ -62,7 +62,7 @@ class RDKitMoleculeSmilesField(Field):  # type: ignore
 
     def to_representation(self, value: Molecule) -> str:
         """Convert the RDKit molecule to SMILES."""
-        return Chem.MolToSmiles(value.molecule)
+        return MolToSmiles(value.molecule)
 
     def to_internal_value(self, data: str) -> Dict[str, Optional[Mol]]:
         """Convert the SMILES to an RDKit molecule."""
@@ -79,7 +79,7 @@ class RDKitMoleculeInchiField(Field):  # type: ignore
 
     def to_representation(self, value: Molecule) -> str:
         """Convert the RDKit molecule to an InChI string."""
-        return Chem.MolToInchi(value.molecule)
+        return MolToInchi(value.molecule)
 
     def to_internal_value(self, data: str) -> Dict[str, Optional[Mol]]:
         """Convert an InChI string to an RDKit molecule."""
@@ -87,7 +87,7 @@ class RDKitMoleculeInchiField(Field):  # type: ignore
             return {"inchi": None}
 
         try:
-            return {"inchi": Chem.MolFromInchi(data)}
+            return {"inchi": MolFromInchi(data)}
         except ValueError as exc:
             raise InvalidMolecule("Invalid InChI data") from exc
 
