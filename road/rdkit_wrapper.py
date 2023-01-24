@@ -7,9 +7,9 @@ import re
 import sys
 from contextlib import contextmanager
 from io import StringIO
-from typing import Iterator, List, Optional
+from typing import Iterator, List, Optional, Callable
 
-from rdkit.Chem import Mol, MolFromSmiles
+from rdkit.Chem import Mol, MolFromSmiles, MolFromInchi
 from rdkit.rdBase import LogToPythonStderr
 
 from .exceptions import InvalidMolecule
@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "smiles_to_mol",
+    "inchi_to_mol",
 ]
 
 
@@ -27,19 +28,45 @@ def smiles_to_mol(smiles: str) -> Mol:
     Converts a SMILES string to an RDKit molecule.
     Raises an exception if the conversion fails.
     """
+    return to_mol(MolFromSmiles, "SMILES", smiles)
+
+
+def inchi_to_mol(inchi: str) -> Mol:
+    """
+    Converts an InChI string to an RDKit molecule.
+    Raises an exception if the conversion fails.
+    """
+    return to_mol(MolFromInchi, "InChI", inchi)
+
+
+def to_mol(
+    func: Callable[[str], Optional[Mol]], input_type: str, input_value: str
+) -> Mol:
+    """
+    Convert into an RDKit molecule.
+    Raises an exception if the conversion fails.
+    """
     errors: List[str] = []
 
     with get_rdkit_error_lines(errors):
-        mol = MolFromSmiles(smiles)
+        mol = func(input_value)
+
+    # When parsing invalid InChI strings, RDKit returns the "ERROR: " string, which isn't helpful
+    # to the user. We'll remove it from the error messages.
+    errors.remove("ERROR: ")
 
     if mol is None:
         if len(errors) == 0:
-            logger.warning("Invalid SMILES: {} (no error messages returned)", smiles)
-            raise InvalidMolecule("Invalid SMILES")
+            logger.warning(
+                "Invalid %s: %s (no error messages returned)", input_type, input_value
+            )
+            raise InvalidMolecule(f"Invalid {input_type}")
         raise InvalidMolecule(errors)
 
     if len(errors) > 0:
-        logger.warning("Valid SMILES: {} (with error messages: {})", smiles, errors)
+        logger.warning(
+            "Valid %s: %s (with error messages: %s)", input_type, input_value, errors
+        )
         raise InvalidMolecule(errors)
 
     return mol

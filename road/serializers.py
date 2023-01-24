@@ -19,7 +19,7 @@ from rest_framework.serializers import (
 
 from .exceptions import InvalidMolecule
 from .models import Molecule, Reaction, ReactionComponent, UserProfile
-from .rdkit_wrapper import smiles_to_mol
+from .rdkit_wrapper import smiles_to_mol, inchi_to_mol
 
 
 class RDKitMoleculeJSONField(Field):  # type: ignore
@@ -86,10 +86,7 @@ class RDKitMoleculeInchiField(Field):  # type: ignore
         if data == "":
             return {"inchi": None}
 
-        try:
-            return {"inchi": MolFromInchi(data)}
-        except ValueError as exc:
-            raise InvalidMolecule("Invalid InChI data") from exc
+        return {"inchi": inchi_to_mol(data)}
 
 
 class MoleculeSerializer(HyperlinkedModelSerializer):
