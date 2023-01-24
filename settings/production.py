@@ -10,6 +10,25 @@ DEBUG = False
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+LOGGING |= {
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_DIR / "django.log",
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "formatter": "verbose",
+        }
+    },
+    "loggers": {
+        "road": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True,
+        }
+    },
+}
+
 # SSL
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True

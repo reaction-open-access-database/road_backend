@@ -187,6 +187,19 @@ DEFAULT_FROM_EMAIL = os.environ["EMAIL_FROM"]
 
 DRF_ACCESS_POLICY = {"reusable_conditions": ["road.global_access_conditions"]}
 
+LOG_DIR = Path(os.environ["LOG_DIR"])
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(name)s %(process)d %(thread)d: %(message)s"
+        },
+        "simple": {"format": "%(levelname)s %(name)s: %(message)s"},
+    },
+}
+
 # Monkeypatching Django, so stubs will work for all generics,
 # see: https://github.com/typeddjango/django-stubs
 django_stubs_ext.monkeypatch()

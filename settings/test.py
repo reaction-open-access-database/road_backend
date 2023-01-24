@@ -26,5 +26,22 @@ from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import, 
 # Test settings
 DEBUG = False
 
+LOGGING |= {
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        }
+    },
+    "loggers": {
+        "road": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        }
+    },
+}
+
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
