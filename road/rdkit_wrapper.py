@@ -53,7 +53,10 @@ def to_mol(
 
     # When parsing invalid InChI strings, RDKit returns the "ERROR: " string, which isn't helpful
     # to the user. We'll remove it from the error messages.
-    errors.remove("ERROR: ")
+    try:
+        errors.remove("ERROR: ")
+    except ValueError:
+        pass
 
     if mol is None:
         if len(errors) == 0:
