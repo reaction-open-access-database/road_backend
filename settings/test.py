@@ -3,6 +3,7 @@ Settings for the testing environment
 """
 
 import os
+
 from dotenv import find_dotenv, load_dotenv
 
 os.environ["EMAIL_HOST"] = "example.com"
