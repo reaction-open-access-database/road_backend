@@ -22,6 +22,16 @@ services:
     ports:
       - "8000:80"
       - "8001:443"
+  web-test:
+    build:
+      dockerfile: Dockerfile
+    command: python manage.py runserver
+    env_file:
+      - ${TEST_ENV_FILE}
+    ports:
+      - "8002:8000"
+    profiles:
+      - testing
 
 volumes:
   static_volume:
