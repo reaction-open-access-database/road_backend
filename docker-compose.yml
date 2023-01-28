@@ -25,7 +25,7 @@ services:
   web-test:
     build:
       dockerfile: Dockerfile
-    command: python manage.py runserver
+    command: python manage.py runserver 0.0.0.0:8000
     env_file:
       - ${TEST_ENV_FILE}
     ports:
