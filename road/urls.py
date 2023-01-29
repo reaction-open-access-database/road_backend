@@ -2,6 +2,7 @@
 Defines the URL routes for ROAD, including the router for the REST API.
 """
 
+from django.conf import settings
 from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import (
     ConfirmEmailView,
@@ -20,6 +21,7 @@ from .views import (
     ReactionComponentViewSet,
     ReactionViewSet,
     UserProfileViewSet,
+    FlushView,
 )
 
 router = routers.DefaultRouter()
@@ -49,3 +51,6 @@ urlpatterns = [
         name="account_confirm_email",
     ),
 ]
+
+if settings.ALLOW_REMOTE_DATABASE_FLUSH:
+    urlpatterns.append(path("flush/", FlushView.as_view()))

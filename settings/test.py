@@ -26,5 +26,7 @@ from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import, 
 # Test settings
 DEBUG = False
 
+ALLOW_REMOTE_DATABASE_FLUSH = True
+
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
