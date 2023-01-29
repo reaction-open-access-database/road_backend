@@ -11,7 +11,7 @@ os.environ = {
     "EMAIL_HOST_PASSWORD": "password",
     "EMAIL_FROM": "user@example.com",
     "ADMIN_URL": "admin/",
-    "LOGIN_URL": "login/",
+    "LOGIN_URL": "/login/",
     "ALLOWED_HOST": "localhost",
 } | os.environ
 
