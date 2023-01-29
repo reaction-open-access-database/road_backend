@@ -6,10 +6,9 @@ The views and ViewSets for the ROAD REST API.
 
 from __future__ import annotations
 
-from typing import NoReturn
-
-import os
 import logging
+import os
+from typing import NoReturn
 
 from django.conf import settings
 from django.core.management.commands.flush import Command as FlushCommand
@@ -20,12 +19,12 @@ from query_parser import (  # pylint: disable=import-error, no-name-in-module
 )
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
-from rest_framework.request import Request
-from rest_framework.serializers import BaseSerializer
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.serializers import BaseSerializer
+from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .access_policies import (
     MoleculeAccessPolicy,
@@ -43,7 +42,6 @@ from .serializers import (
     ReactionSerializer,
     UserProfileSerializer,
 )
-
 
 logger = logging.getLogger(__name__)
 

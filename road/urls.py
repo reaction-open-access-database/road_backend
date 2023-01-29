@@ -2,7 +2,6 @@
 Defines the URL routes for ROAD, including the router for the REST API.
 """
 
-from django.conf import settings
 from dj_rest_auth.jwt_auth import get_refresh_view
 from dj_rest_auth.registration.views import (
     ConfirmEmailView,
@@ -11,17 +10,18 @@ from dj_rest_auth.registration.views import (
     VerifyEmailView,
 )
 from dj_rest_auth.views import LoginView, LogoutView
+from django.conf import settings
 from django.urls import include, path
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenVerifyView
 
 from .views import (
+    FlushView,
     MoleculeQueryView,
     MoleculeViewSet,
     ReactionComponentViewSet,
     ReactionViewSet,
     UserProfileViewSet,
-    FlushView,
 )
 
 router = routers.DefaultRouter()
