@@ -4,16 +4,19 @@ Settings for the testing environment
 
 import os
 
-os.environ = {
+DEFAULT_ENVIRON = {
     "EMAIL_HOST": "example.com",
     "EMAIL_PORT": "25",
     "EMAIL_HOST_USER": "user",
     "EMAIL_HOST_PASSWORD": "password",
     "EMAIL_FROM": "user@example.com",
     "ADMIN_URL": "admin/",
-    "LOGIN_URL": "login/",
+    "LOGIN_URL": "/login/",
     "ALLOWED_HOST": "localhost",
-} | os.environ
+}
+for key, value in DEFAULT_ENVIRON.items():
+    if key not in os.environ:
+        os.environ[key] = value
 
 # If this is a development environment, load secret key, database, etc from .env file
 from dotenv import find_dotenv, load_dotenv  # pylint: disable=wrong-import-position
@@ -25,6 +28,8 @@ from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import, 
 
 # Test settings
 DEBUG = False
+
+ALLOW_REMOTE_DATABASE_FLUSH = True
 
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
