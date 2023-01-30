@@ -32,4 +32,5 @@ DEBUG = False
 ALLOW_REMOTE_DATABASE_FLUSH = True
 
 # Email
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+if os.environ.get("SEND_EMAILS", "False") != "True":
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
