@@ -11,7 +11,7 @@ import os
 from typing import NoReturn
 
 from django.conf import settings
-from django.core.management.commands.flush import Command as FlushCommand
+from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.db.models import Q, QuerySet
 from query_parser import (  # pylint: disable=import-error, no-name-in-module
     QueryParserError,
@@ -189,5 +189,7 @@ class FlushView(APIView):
     def flush_database(self) -> None:
         """Flush the default database."""
         logger.warning("Flushing database")
-        FlushCommand().handle(database="default", verbosity=0, interactive=False)
+        Reaction.objects.all().delete()
+        Molecule.objects.all().delete()
+        User.objects.all().delete()
         logger.warning("Database flushed")
