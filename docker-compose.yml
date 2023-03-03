@@ -11,6 +11,7 @@ services:
       - 8000
     volumes:
       - static_volume:/home/app/road/static
+      - ${LOG_DIR}:/home/app/road/logs
   nginx:
     build: ./nginx
     depends_on:
