@@ -183,6 +183,20 @@ ALLOW_REMOTE_DATABASE_FLUSH = False
 if "REMOTE_DATABASE_FLUSH_SECRET" in os.environ:
     REMOTE_DATABASE_FLUSH_SECRET = os.environ["REMOTE_DATABASE_FLUSH_SECRET"]
 
+LOG_DIR = Path(os.environ["LOG_DIR"])
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(name)s %(process)d %(thread)d: "
+            "%(message)s"
+        },
+        "simple": {"format": "%(levelname)s %(name)s: %(message)s"},
+    },
+}
+
 # Email
 EMAIL_HOST = os.environ["EMAIL_HOST"]
 EMAIL_PORT = os.environ["EMAIL_PORT"]

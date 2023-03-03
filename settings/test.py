@@ -18,6 +18,7 @@ DEFAULT_ENVIRON = {
     "ADMIN_URL": "admin/",
     "LOGIN_URL": "/login/",
     "ALLOWED_HOST": "localhost",
+    "LOG_DIR": "logs",
 }
 for key, value in DEFAULT_ENVIRON.items():
     if key not in os.environ:
@@ -30,6 +31,23 @@ from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import, 
 DEBUG = False
 
 ALLOW_REMOTE_DATABASE_FLUSH = True
+
+LOGGING |= {
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        }
+    },
+    "loggers": {
+        "road": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        }
+    },
+}
 
 # Email
 if os.environ.get("SEND_EMAILS", "False") != "True":
