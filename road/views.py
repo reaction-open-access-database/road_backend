@@ -43,6 +43,8 @@ from .serializers import (
     UserProfileSerializer,
 )
 
+from django.db.utils import DataError
+
 logger = logging.getLogger(__name__)
 
 
@@ -147,7 +149,14 @@ class MoleculeQueryView(QueryView):
         except QueryParserError as error:
             raise InvalidQuery from error
 
-        return Molecule.objects.filter(parsed_query)
+        queryset = Molecule.objects.filter(parsed_query)
+
+        try:
+            list(queryset)
+        except DataError:
+            raise InvalidQuery
+
+        return queryset
 
 
 class FlushView(APIView):
