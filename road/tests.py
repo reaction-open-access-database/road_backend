@@ -297,7 +297,7 @@ class PermissionTest(APITestCase):
         with self.subTest("Authenticated users are allowed to create molecules"):
             response = self.client.post(
                 reverse("molecule-list"),
-                {"name": "methane", "smiles": "C"},
+                {"name": "propane", "smiles": "CCC"},
                 format="json",
             )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -340,7 +340,7 @@ class PermissionTest(APITestCase):
         with self.subTest("Admins are allowed to create molecules"):
             response = self.client.post(
                 reverse("molecule-list"),
-                {"name": "ethane", "smiles": "CC"},
+                {"name": "butane", "smiles": "CCCC"},
                 format="json",
             )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
