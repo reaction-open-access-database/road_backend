@@ -32,7 +32,7 @@ router.register("user-profiles", UserProfileViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("molecule-query/", MoleculeQueryView.as_view()),
+    path("molecule-query/", MoleculeQueryView.as_view(), name="molecule-query"),
     # Accounts
     path("register/", RegisterView.as_view()),
     path("login/", LoginView.as_view()),

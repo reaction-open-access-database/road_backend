@@ -13,6 +13,7 @@ from typing import NoReturn
 from django.conf import settings
 from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.db.models import Q, QuerySet
+from django.db.utils import DataError
 from query_parser import (  # pylint: disable=import-error, no-name-in-module
     QueryParserError,
     build_molecule_query,
@@ -147,7 +148,14 @@ class MoleculeQueryView(QueryView):
         except QueryParserError as error:
             raise InvalidQuery from error
 
-        return Molecule.objects.filter(parsed_query)
+        queryset = Molecule.objects.filter(parsed_query)
+
+        try:
+            list(queryset)
+        except DataError as error:
+            raise InvalidQuery from error
+
+        return queryset
 
 
 class FlushView(APIView):

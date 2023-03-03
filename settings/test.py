@@ -4,6 +4,11 @@ Settings for the testing environment
 
 import os
 
+# If this is a development environment, load secret key, database, etc from .env file
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv())
+
 DEFAULT_ENVIRON = {
     "EMAIL_HOST": "example.com",
     "EMAIL_PORT": "25",
@@ -17,11 +22,6 @@ DEFAULT_ENVIRON = {
 for key, value in DEFAULT_ENVIRON.items():
     if key not in os.environ:
         os.environ[key] = value
-
-# If this is a development environment, load secret key, database, etc from .env file
-from dotenv import find_dotenv, load_dotenv  # pylint: disable=wrong-import-position
-
-load_dotenv(find_dotenv())
 
 # Base settings
 from .base import *  # pylint: disable=wildcard-import, unused-wildcard-import, wrong-import-position
