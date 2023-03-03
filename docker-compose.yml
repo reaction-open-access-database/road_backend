@@ -7,11 +7,13 @@ services:
     command: gunicorn wsgi:application --bind 0.0.0.0:8000 --error-logfile ./error.log --access-logfile ./access.log --capture-output --log-level debug
     env_file:
       - ${ENV_FILE}
+    environment:
+      - LOG_DIR=/home/app/road/logs
     expose:
       - 8000
     volumes:
       - static_volume:/home/app/road/static
-      - ${LOG_DIR}:/home/app/road/logs
+      - ${PROD_LOG_DIR}:/home/app/road/logs
   nginx:
     build: ./nginx
     depends_on:
@@ -29,6 +31,8 @@ services:
     command: python manage.py runserver 0.0.0.0:8000 --insecure
     env_file:
       - ${TEST_ENV_FILE}
+    environment:
+      - LOG_DIR=/home/app/road/logs
     ports:
       - "8002:8000"
     profiles:
