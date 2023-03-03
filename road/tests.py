@@ -164,6 +164,27 @@ class MoleculeTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Molecule.objects.count(), 1)
 
+    def test_invalid_molecule_query(self) -> None:
+        """Test that invalid molecule structure queries are rejected."""
+        invalid_smiles = "C>>C"
+        response = self.client.get(
+            reverse("molecule-query"),
+            {
+                "type": "quantity",
+                "query": {
+                    "value": {
+                        "type": "smiles",
+                        "value": invalid_smiles,
+                    },
+                    "type": "structure",
+                    "op": "equal",
+                },
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     # def test_molecular_formula(self):
     #     pass
 
@@ -276,7 +297,7 @@ class PermissionTest(APITestCase):
         with self.subTest("Authenticated users are allowed to create molecules"):
             response = self.client.post(
                 reverse("molecule-list"),
-                {"name": "methane", "smiles": "C"},
+                {"name": "propane", "smiles": "CCC"},
                 format="json",
             )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -319,7 +340,7 @@ class PermissionTest(APITestCase):
         with self.subTest("Admins are allowed to create molecules"):
             response = self.client.post(
                 reverse("molecule-list"),
-                {"name": "ethane", "smiles": "CC"},
+                {"name": "butane", "smiles": "CCCC"},
                 format="json",
             )
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)

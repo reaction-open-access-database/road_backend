@@ -6,17 +6,25 @@ The views and ViewSets for the ROAD REST API.
 
 from __future__ import annotations
 
+import logging
+import os
 from typing import NoReturn
 
+from django.conf import settings
+from django.contrib.auth.models import User  # pylint: disable=imported-auth-user
 from django.db.models import Q, QuerySet
+from django.db.utils import DataError
 from query_parser import (  # pylint: disable=import-error, no-name-in-module
     QueryParserError,
     build_molecule_query,
 )
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.serializers import BaseSerializer
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .access_policies import (
@@ -35,6 +43,8 @@ from .serializers import (
     ReactionSerializer,
     UserProfileSerializer,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class HideUnauthorisedMixin:  # pylint: disable=too-few-public-methods
@@ -138,4 +148,56 @@ class MoleculeQueryView(QueryView):
         except QueryParserError as error:
             raise InvalidQuery from error
 
-        return Molecule.objects.filter(parsed_query)
+        queryset = Molecule.objects.filter(parsed_query)
+
+        try:
+            list(queryset)
+        except DataError as error:
+            raise InvalidQuery from error
+
+        return queryset
+
+
+class FlushView(APIView):
+    """
+    A view to flush the database for testing purposes.
+    """
+
+    permission_classes = [AllowAny]
+
+    def post(self, request: Request) -> Response:
+        """Flush the database if the user is allowed to."""
+        if self.can_flush(request):
+            self.flush_database()
+            return Response(status=204)
+        return Response(status=400)
+
+    def can_flush(self, request: Request) -> bool:
+        """Return True if the database can be flushed."""
+        try:
+            settings_allow_flush = settings.ALLOW_REMOTE_DATABASE_FLUSH
+        except AttributeError:
+            return False
+
+        environment_allow_flush = (
+            os.environ.get("ALLOW_REMOTE_DATABASE_FLUSH", "False") == "True"
+        )
+
+        try:
+            secret = settings.REMOTE_DATABASE_FLUSH_SECRET
+        except AttributeError:
+            return False
+
+        return (
+            settings_allow_flush
+            and environment_allow_flush
+            and request.data.get("secret") == secret
+        )
+
+    def flush_database(self) -> None:
+        """Flush the default database."""
+        logger.warning("Flushing database")
+        Reaction.objects.all().delete()
+        Molecule.objects.all().delete()
+        User.objects.all().delete()
+        logger.warning("Database flushed")

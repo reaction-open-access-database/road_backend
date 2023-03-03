@@ -10,11 +10,13 @@ from dj_rest_auth.registration.views import (
     VerifyEmailView,
 )
 from dj_rest_auth.views import LoginView, LogoutView
+from django.conf import settings
 from django.urls import include, path
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenVerifyView
 
 from .views import (
+    FlushView,
     MoleculeQueryView,
     MoleculeViewSet,
     ReactionComponentViewSet,
@@ -30,7 +32,7 @@ router.register("user-profiles", UserProfileViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("molecule-query/", MoleculeQueryView.as_view()),
+    path("molecule-query/", MoleculeQueryView.as_view(), name="molecule-query"),
     # Accounts
     path("register/", RegisterView.as_view()),
     path("login/", LoginView.as_view()),
@@ -49,3 +51,6 @@ urlpatterns = [
         name="account_confirm_email",
     ),
 ]
+
+if settings.ALLOW_REMOTE_DATABASE_FLUSH:
+    urlpatterns.append(path("flush/", FlushView.as_view()))
