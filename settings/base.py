@@ -177,6 +177,12 @@ ALLOWED_HOSTS = [os.environ["ALLOWED_HOST"]]
 ADMIN_URL = os.environ["ADMIN_URL"]
 LOGIN_URL = os.environ["LOGIN_URL"]
 
+DRF_ACCESS_POLICY = {"reusable_conditions": ["road.global_access_conditions"]}
+
+ALLOW_REMOTE_DATABASE_FLUSH = False
+if "REMOTE_DATABASE_FLUSH_SECRET" in os.environ:
+    REMOTE_DATABASE_FLUSH_SECRET = os.environ["REMOTE_DATABASE_FLUSH_SECRET"]
+
 # Email
 EMAIL_HOST = os.environ["EMAIL_HOST"]
 EMAIL_PORT = os.environ["EMAIL_PORT"]
@@ -184,8 +190,6 @@ EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
 EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.environ["EMAIL_FROM"]
-
-DRF_ACCESS_POLICY = {"reusable_conditions": ["road.global_access_conditions"]}
 
 # Monkeypatching Django, so stubs will work for all generics,
 # see: https://github.com/typeddjango/django-stubs
