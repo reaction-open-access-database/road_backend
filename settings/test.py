@@ -18,6 +18,7 @@ DEFAULT_ENVIRON = {
     "ADMIN_URL": "admin/",
     "LOGIN_URL": "/login/",
     "ALLOWED_HOST": "localhost",
+    "LOG_DIR": "logs",
 }
 for key, value in DEFAULT_ENVIRON.items():
     if key not in os.environ:
